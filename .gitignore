@@ -1,0 +1,7 @@
+﻿JSON/_general.json
+*.p12
+
+.vs/
+bin/
+obj/
+packages/
