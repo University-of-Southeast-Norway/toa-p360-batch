@@ -98,21 +98,21 @@ namespace dfo_toa_manual
             Program.config = JObject.Parse(File.ReadAllText(@"JSON\_general.json"));
 
             Program.certificate = new X509Certificate2(
-                (string)Program.config.maskinporten.certificate.path,
-                (string)Program.config.maskinporten.certificate.password
+                DefaultContext.Current.MaskinportenCertificatePath,
+                DefaultContext.Current.MaskinportenCertificatePassword
             );
 
             var configuration = new MaskinportenClientConfiguration(
-                audience: (string) Program.config.maskinporten.audience,
-                tokenEndpoint: (string) Program.config.maskinporten.token_endpoint,
-                issuer: (string) Program.config.maskinporten.issuer,
+                audience: DefaultContext.Current.MaskinportenAudience,
+                tokenEndpoint: DefaultContext.Current.MaskinportenTokenEndpoint,
+                issuer: DefaultContext.Current.MaskinportenIssuer,
                 numberOfSecondsLeftBeforeExpire: 10,
                 certificate: Program.certificate);
 
             Program.maskinportenClient = new MaskinportenClient(configuration);
 
             Log.LogToFile("Get access token from Maskinporten...");
-            return await Program.maskinportenClient.GetAccessToken((string)Program.config.maskinporten.scope);
+            return await Program.maskinportenClient.GetAccessToken(DefaultContext.Current.MaskinportenScope);
         }
     }
 }
