@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Collections.Generic;
 using dfo_toa_manual.DFO;
+using P360Client.Domain;
 
 namespace dfo_toa_manual
 {
@@ -19,12 +20,18 @@ namespace dfo_toa_manual
 
         static async Task Main(string[] args)
         {
+#if DEBUG
+            String dateFrom = "20220910";
+            String dateTo = "20220911";
+            Boolean proceed = true;
+#else
             Console.Write("Angi startdato (yyyymmdd): ");
             String dateFrom = Console.ReadLine();
             Console.Write("Angi sluttdato (yyyymmdd): ");
             String dateTo = Console.ReadLine();
             Console.WriteLine("Er du sikker på at du vil arkivere kontrakter fra " + dateFrom + " til " + dateTo + "? Skriv ja for å fortsette eller trykk enter for å avslutte.");
             Boolean proceed = Console.ReadLine() == "ja" ? true : false;
+#endif
 
             if (proceed)
             {
@@ -39,7 +46,7 @@ namespace dfo_toa_manual
 
         protected static async Task Archive(String dateFrom, String dateTo)
         {
-            await Program.init().ContinueWith(t =>
+            await Program.init().ContinueWith(async t =>
             {
                 try
                 {
@@ -69,23 +76,20 @@ namespace dfo_toa_manual
                             Employee employee = API.getEmployee(client, employeeContract.Id);
                             Console.WriteLine("Found " + employee.ToString());
 
-                            /*
+
                             DocumentService.Files2 contractFile = new DocumentService.Files2();
                             contractFile.Title = contract.ContractId;
                             contractFile.Format = "pdf";
-                            List<object> data = new List<object>();
-                            data.Add(contract.FileContent);
-                            contractFile.Data = data;
-
-                            P360BusinessLogic.Run(employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
-                            */
+                            contractFile.Base64Data = contract.FileContent;
+                            P360BusinessLogic.Context = new Context();
+                            await P360BusinessLogic.Run(employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
                         }
-                        catch (Exception ex) { Console.WriteLine("Data not found, skipping..."); }
+                        catch (Exception ex) { Console.WriteLine($"Unhandled error occured:{Environment.NewLine}{ex}"); }
                     }
                 }
                 catch (Exception ex) { Log.LogToFile(ex.ToString()); }
                 finally { Log.Flush(); }
-            });
+            }).Unwrap();
         }
 
         protected async static Task<MaskinportenToken> init()
