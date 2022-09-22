@@ -49,6 +49,7 @@ namespace dfo_toa_manual
             {
                 try
                 {
+                    var ecHandler = new EmployeeContractHandler();
                     var token = t.Result;
                     Log.LogToFile("Token received... (" + token.Token.Substring(0, 10) + "...)");
 
@@ -75,13 +76,7 @@ namespace dfo_toa_manual
                             Employee employee = API.getEmployee(client, employeeContract.Id);
                             Console.WriteLine("Found " + employee.ToString());
 
-
-                            DocumentService.Files2 contractFile = new DocumentService.Files2();
-                            contractFile.Title = contract.ContractId;
-                            contractFile.Format = "pdf";
-                            contractFile.Base64Data = contract.FileContent;
-                            P360BusinessLogic.Context = DefaultContext.Current;
-                            await P360BusinessLogic.Run(employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
+                            await ecHandler.RunAsync(employee, contract);
                         }
                         catch (Exception ex) { Console.WriteLine($"Unhandled error occured:{Environment.NewLine}{ex}"); }
                     }
@@ -111,6 +106,24 @@ namespace dfo_toa_manual
 
             Log.LogToFile("Get access token from Maskinporten...");
             return await Program.maskinportenClient.GetAccessToken(DefaultContext.Current.MaskinportenScope);
+        }
+
+        public interface IEmployeeContractHandler
+        {
+            Task RunAsync(Employee employee, Contract contract);
+        }
+
+        public class EmployeeContractHandler : IEmployeeContractHandler
+        {
+            public async Task RunAsync(Employee employee, Contract contract)
+            {
+                DocumentService.Files2 contractFile = new DocumentService.Files2();
+                contractFile.Title = contract.ContractId;
+                contractFile.Format = "pdf";
+                contractFile.Base64Data = contract.FileContent;
+                P360BusinessLogic.Context = DefaultContext.Current;
+                await P360BusinessLogic.Run(employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
+            }
         }
     }
 }
