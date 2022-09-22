@@ -81,7 +81,7 @@ namespace dfo_toa_manual
                             contractFile.Title = contract.ContractId;
                             contractFile.Format = "pdf";
                             contractFile.Base64Data = contract.FileContent;
-                            P360BusinessLogic.Context = new Context();
+                            P360BusinessLogic.Context = DefaultContext.Current;
                             await P360BusinessLogic.Run(employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
                         }
                         catch (Exception ex) { Console.WriteLine($"Unhandled error occured:{Environment.NewLine}{ex}"); }

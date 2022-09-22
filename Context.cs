@@ -1,25 +1,46 @@
 ﻿using Newtonsoft.Json.Linq;
 using P360Client;
 using P360Client.Domain;
+using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 
 namespace dfo_toa_manual
 {
-    internal class Context : P360Client.Domain.IContext
+    internal class DefaultContext : P360Client.Domain.IContext
     {
-        private static readonly string jsonGeneral = File.ReadAllText(@"JSON\_general.json");
-        private readonly dynamic dynamicInProductionDate = JObject.Parse(jsonGeneral);
-        public string Environment => throw new System.NotImplementedException();
+        private static readonly string _jsonGeneral = File.ReadAllText(@"JSON\_general.json");
+        private readonly dynamic _dynamicGeneral = JObject.Parse(_jsonGeneral);
+        private static DefaultContext _defaultContext;
+        private static readonly object _theLock = new object();
+        public static DefaultContext Current { get { return GetSingleton() ; } }
 
-        public string P360BaseAddress => dynamicInProductionDate.p360BaseAddress.ToString();
+        private static DefaultContext GetSingleton()
+        {
+            lock (_theLock)
+            {
+                _defaultContext = new DefaultContext() ;
+                if (_defaultContext == null)
+                {
+                    _defaultContext = new DefaultContext();
+                }
+                return _defaultContext;
+            }
+        }
 
-        public string P360ApiKey => "?authkey=" + dynamicInProductionDate.p360ApiKey.ToString();
+        private DefaultContext(){}
 
-        public string InProductionDate => dynamicInProductionDate.inProductionDate.ToString();
+        public string P360BaseAddress => _dynamicGeneral.p360BaseAddress.ToString();
+
+        public string P360ApiKey => "?authkey=" + _dynamicGeneral.p360ApiKey.ToString();
+
+        public string InProductionDate => _dynamicGeneral.inProductionDate.ToString();
 
         public ILog CurrentLogger => _currentLogger;
+
+        public string LogFilePath => _dynamicGeneral.logFilePath.ToString();
+
         private ILog _currentLogger = new FileLogger();
 
         public class FileLogger : ILog

@@ -7,8 +7,7 @@ namespace dfo_toa_manual
 {
     public static class Log
     {
-        private static string _logFilePath = JObject.Parse(File.ReadAllText(@"JSON\_general.json") as dynamic).logFilePath;
-        private static Stream _logFile = File.Create(_logFilePath);
+        private static readonly Stream _logFile = File.Create(DefaultContext.Current.LogFilePath);
         private static TextWriterTraceListener _traceListener;
 
         public static void LogToFile(string stringToLog)
