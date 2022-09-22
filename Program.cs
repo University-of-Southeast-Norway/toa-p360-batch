@@ -14,7 +14,6 @@ namespace dfo_toa_manual
 {
     internal class Program
     {
-        protected static dynamic config;
         protected static MaskinportenClient maskinportenClient;
         protected static X509Certificate2 certificate;
 
@@ -55,7 +54,7 @@ namespace dfo_toa_manual
 
                     // Call api...
                     HttpClient client = new HttpClient();
-                    client.BaseAddress = new Uri((string)Program.config.dfo.api_base);
+                    client.BaseAddress = new Uri(DefaultContext.Current.DfoApiBaseAddress);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 
@@ -95,7 +94,6 @@ namespace dfo_toa_manual
         protected async static Task<MaskinportenToken> init()
         {
             Log.LogToFile("Initializing...");
-            Program.config = JObject.Parse(File.ReadAllText(@"JSON\_general.json"));
 
             Program.certificate = new X509Certificate2(
                 DefaultContext.Current.MaskinportenCertificatePath,

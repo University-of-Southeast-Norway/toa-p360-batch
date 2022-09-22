@@ -41,6 +41,7 @@ namespace dfo_toa_manual
         public string MaskinportenTokenEndpoint => _dynamicGeneral.maskinporten.token_endpoint.ToString();
         public string MaskinportenIssuer => _dynamicGeneral.maskinporten.issuer.ToString();
         public string MaskinportenScope => _dynamicGeneral.maskinporten.scope.ToString();
+        public string DfoApiBaseAddress => _dynamicGeneral.dfo.api_base.ToString();
 
 
         private ILog _currentLogger = new FileLogger();
