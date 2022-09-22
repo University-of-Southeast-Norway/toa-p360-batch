@@ -35,6 +35,7 @@ stages:
         vstsFeed: 'fdad029d-ef21-4332-8721-280783508a77'
 
     - task: CmdLine@2
+      displayName: 'Copy _general.example.json to _general.json'
       inputs:
         script: copy $(Build.SourcesDirectory)\JSON\_general.example.json $(Build.SourcesDirectory)\JSON\_general.json
       
@@ -59,19 +60,21 @@ stages:
         configuration: '$(buildConfiguration)'
 
     - task: CopyFiles@2
+      displayName: 'Copy artifacts to staging directory'
       inputs:
         contents: |
           bin\**\?(*.exe|*.dll|*.exe.config)
         targetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: true
-      displayName: 'Copy artifacts to staging directory'
+
     - task: CopyFiles@2
+      displayName: 'Copy _general.json and Definitions to staging directory'
       inputs:
         contents: |
           JSON\_general.json
+          Definitions\*
         targetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: false
-      displayName: 'Copy _general.json to staging directory'
 
     - task: PublishBuildArtifacts@1
       inputs:
