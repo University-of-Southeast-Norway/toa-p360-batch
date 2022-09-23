@@ -36,7 +36,7 @@ stages:
 
     - task: CmdLine@2
       inputs:
-        script: copy $(Build.SourcesDirectory)\JSON\_general.example.json $(Build.SourcesDirectory)\JSON\_general.json
+        script: copy $(Build.SourcesDirectory)\Dfo.Manual\JSON\_general.example.json $(Build.SourcesDirectory)\Dfo.Manual\JSON\_general.json
       
     - task: VSBuild@1
       inputs:
