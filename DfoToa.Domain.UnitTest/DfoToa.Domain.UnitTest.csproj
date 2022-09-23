@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DfoClient.Domain\DfoClient.Domain.csproj" />
+    <ProjectReference Include="..\DfoToa.Domain\DfoToa.Domain.csproj" />
   </ItemGroup>
 
 </Project>
