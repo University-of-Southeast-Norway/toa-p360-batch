@@ -1,6 +1,6 @@
 ﻿using System.Security;
 
-namespace DfoClient.Domain
+namespace DfoToa.Domain
 {
     public interface IContext : P360Client.Domain.IContext
     {

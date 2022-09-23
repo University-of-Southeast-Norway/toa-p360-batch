@@ -1,4 +1,5 @@
 ﻿using dfo_toa_manual.DFO;
+using DfoClient;
 using Ks.Fiks.Maskinporten.Client;
 using P360Client.Domain;
 using System;
@@ -11,7 +12,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DfoClient.Domain
+namespace DfoToa.Domain
 {
     public class ArchiveHandler
     {
@@ -28,7 +29,7 @@ namespace DfoClient.Domain
             {
                 var token = t.Result;
                 Context.CurrentLogger.WriteToLog($"Token received... ({token.Token.Substring(10)}...)");
-                var dfoClient = new DfoClient.Client(Context.DfoApiBaseAddress, token.Token);
+                var dfoClient = new Client(Context.DfoApiBaseAddress, token.Token);
 
                 List<string> contractSequenceList = await dfoClient.GetContractSequenceList(from, to);
 

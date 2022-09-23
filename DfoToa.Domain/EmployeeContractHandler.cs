@@ -4,7 +4,7 @@ using P360Client.Domain;
 using System.Threading.Tasks;
 #endif
 
-namespace DfoClient.Domain
+namespace DfoToa.Domain
 {
     public class EmployeeContractHandler : IEmployeeContractHandler
     {

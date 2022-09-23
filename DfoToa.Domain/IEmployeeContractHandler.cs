@@ -3,7 +3,7 @@
 using System.Threading.Tasks;
 #endif
 
-namespace DfoClient.Domain
+namespace DfoToa.Domain
 {
     public interface IEmployeeContractHandler
     {

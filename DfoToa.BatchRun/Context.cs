@@ -8,7 +8,7 @@ using System.IO;
 
 namespace DfoToa.BatchRun
 {
-    internal class DefaultContext : DfoClient.Domain.IContext
+    internal class DefaultContext : Domain.IContext
     {
         private static readonly string _jsonGeneral = File.ReadAllText(@"JSON\_general.json");
         private readonly dynamic _dynamicGeneral = JObject.Parse(_jsonGeneral);

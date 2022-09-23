@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using dfo_toa_manual.DFO;
 using P360Client.Domain;
 using System.Runtime.Remoting.Contexts;
-using DfoClient.Domain;
+using DfoToa.Domain;
 using System.Globalization;
 
 namespace dfo_toa_manual
