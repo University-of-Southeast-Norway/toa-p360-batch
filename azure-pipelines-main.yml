@@ -1,0 +1,80 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger: 
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/dfo_toa_manual.net48.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+stages:
+- stage: build
+
+  jobs:
+  - job: buildAndTest
+    displayName: 'Build and test project'
+    steps:
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        command: 'restore'
+        restoreSolution: '$(solution)'
+        feedsToUse: 'select'
+        vstsFeed: 'fdad029d-ef21-4332-8721-280783508a77'
+
+    - task: CmdLine@2
+      displayName: 'Copy _general.example.json to _general.json'
+      inputs:
+        script: copy $(Build.SourcesDirectory)\Dfo.Manual\JSON\_general.example.json $(Build.SourcesDirectory)\Dfo.Manual\JSON\_general.json
+      
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          **\$(BuildConfiguration)\**\*dfo-toa-manual.test.dll
+          !**\$(BuildConfiguration)\**\*Models*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+          !**\$(BuildConfiguration)\**\*IntegrationTests*.dll
+        codeCoverageEnabled: false
+        testRunTitle: '$(Build.DefinitionName) | $(Build.Reason) |$(Build.SourceVersion)'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
+    - task: CopyFiles@2
+      displayName: 'Copy artifacts to staging directory'
+      inputs:
+        contents: |
+          bin\**\?(*.exe|*.dll|*.exe.config)
+        targetFolder: $(Build.ArtifactStagingDirectory)
+        flattenFolders: true
+
+    - task: CopyFiles@2
+      displayName: 'Copy _general.json and Definitions to staging directory'
+      inputs:
+        contents: |
+          JSON\_general.json
+          Definitions\*
+        targetFolder: $(Build.ArtifactStagingDirectory)
+        flattenFolders: false
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        ArtifactName: artifacts.feature.$(Build.BuildNumber)
+      displayName: 'Publish artifacts'
+
