@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFrameworks>net6.0;net48</TargetFrameworks>
+	  <ImplicitUsings Condition=" '$(TargetFramework)' == 'net6.0' ">enable</ImplicitUsings>
+	  <Nullable Condition=" '$(TargetFramework)' == 'net6.0' ">enable</Nullable>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Title>DFØ API domain logic</Title>
+	  <Version>1.0.0</Version>
+	  <Authors>USN SDO</Authors>
+	  <Company>USN</Company>
+	  <Description>Domain logic for the DFØ API client.</Description>
+	  <Copyright>USN 2022</Copyright>
+	  <PackageProjectUrl>https://dev.azure.com/USN-SDO/Felles</PackageProjectUrl>
+	  <RepositoryUrl>https://dev.azure.com/USN-SDO/Felles/_git/dfo-client</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DfoClient" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>

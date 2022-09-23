@@ -162,5 +162,11 @@
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DfoClient.Domain\DfoClient.Domain.csproj">
+      <Project>{f2f5627d-a6b7-469c-aad1-1d539d47a715}</Project>
+      <Name>DfoClient.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
