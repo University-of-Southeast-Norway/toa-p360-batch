@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: '**/dfo_toa_manual.net48.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
