@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DfoClient" Version="1.0.0" />
+    <PackageReference Include="DfoClient" Version="1.0.1" />
   </ItemGroup>
 
 </Project>
