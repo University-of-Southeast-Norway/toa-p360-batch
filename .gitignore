@@ -8,7 +8,7 @@
 # wget --no-check-certificate http://gist.githubusercontent.com/kmorcinek/2710267/raw/.gitignore
 
 # Project specific files
-JSON/_general.json
+**/_general.json
 *.p12
 
 
