@@ -95,10 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context.cs" />
-    <Compile Include="DFO\Employee.cs" />
-    <Compile Include="DFO\EmployeeContract.cs" />
-    <Compile Include="DFO\Contract.cs" />
-    <Compile Include="DFO\API.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
