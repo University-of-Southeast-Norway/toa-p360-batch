@@ -71,7 +71,7 @@ stages:
       displayName: 'Copy _general.json and Definitions to staging directory'
       inputs:
         contents: |
-          JSON\_general.json
+          Dfo.Manual\JSON\_general.json
           Definitions\*
         targetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: false
