@@ -1,0 +1,20 @@
+{
+  "environment": "test", // Should be either test or prod, anything else will end in an exception.
+  "baseAddressTest": "",
+  "baseAddressProd": "",
+  "inProductionDate": "2023-01-01", // yyyy-MM-dd.
+  "logFilePath": "c:\\temp\\DFO_TOA_MANUAL.txt",
+  "dfo": {
+    "api_base": "https://api.dfo.no/" // TEST: https://api-test.dfo.no/
+  },
+  "maskinporten": {
+    "certificate": {
+      "path": "", // Get certificate from organization
+      "password": "" // Get password from organization
+    },
+    "audience": "https://maskinporten.no/", // TEST: https://ver2.maskinporten.no/
+    "token_endpoint": "https://maskinporten.no/token", // TEST: https://ver2.maskinporten.no/
+    "issuer": "", // Get from samarbeidsportalen
+    "scope": "dfo:ansatte dfo:stillinger dfo:organisasjoner dfo:ansatte/infokontrakter dfo:infokontrakter/filer"
+  }
+}
