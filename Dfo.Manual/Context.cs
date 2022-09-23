@@ -8,7 +8,7 @@ using System.IO;
 
 namespace dfo_toa_manual
 {
-    internal class DefaultContext : P360Client.Domain.IContext
+    internal class DefaultContext : DfoClient.Domain.IContext
     {
         private static readonly string _jsonGeneral = File.ReadAllText(@"JSON\_general.json");
         private readonly dynamic _dynamicGeneral = JObject.Parse(_jsonGeneral);
