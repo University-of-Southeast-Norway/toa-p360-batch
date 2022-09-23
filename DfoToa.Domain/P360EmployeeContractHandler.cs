@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DfoToa.Domain
 {
-    public class EmployeeContractHandler : IEmployeeContractHandler
+    public class P360EmployeeContractHandler : IEmployeeContractHandler
     {
         public IContext Context { get; set; }
 
-        public EmployeeContractHandler(IContext context)
+        public P360EmployeeContractHandler(IContext context)
         {
             Context = context;
         }

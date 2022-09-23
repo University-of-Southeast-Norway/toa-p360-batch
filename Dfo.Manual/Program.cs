@@ -38,7 +38,7 @@ namespace dfo_toa_manual
 
                 try
                 {
-                    await new ArchiveHandler(DefaultContext.Current).Archive(new EmployeeContractHandler(DefaultContext.Current),
+                    await new ArchiveHandler(DefaultContext.Current).Archive(new P360EmployeeContractHandler(DefaultContext.Current),
                         DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
                         DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
                 }
