@@ -15,6 +15,7 @@ pool:
 
 variables:
   solution: '**/dfo_toa_manual.sln'
+  mainProject: 'DfoToa.BatchRun'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -43,7 +44,7 @@ stages:
     - task: CmdLine@2
       displayName: 'Copy _general.example.json to _general.json'
       inputs:
-        script: cp $(Build.SourcesDirectory)/DfoToa.BatchRun/JSON/_general.example.json $(Build.SourcesDirectory)/DfoToa.BatchRun/JSON/_general.json
+        script: cp $(Build.SourcesDirectory)/$(mainProject)/JSON/_general.example.json $(Build.SourcesDirectory)/$(mainProject)/JSON/_general.json
 
 
     - task: DotNetCoreCLI@2
@@ -63,7 +64,7 @@ stages:
       displayName: 'Copy artifacts to staging directory'
       inputs:
         contents: |
-          DfoToa.BatchRun/bin/**/?(*.exe|*.dll|*.exe.config)
+          $(mainProject)/bin/**/?(*.exe|*.dll|*.exe.config)
         targetFolder: $(Build.ArtifactStagingDirectory)/output
         flattenFolders: true
 
@@ -71,7 +72,7 @@ stages:
       displayName: 'Copy _general.example.json to staging directory'
       inputs:
         contents: |
-          DfoToa.BatchRun/JSON/_general.example.json
+          $(mainProject)/JSON/_general.example.json
         targetFolder: $(Build.ArtifactStagingDirectory)/output/JSON
         flattenFolders: true
 
@@ -79,7 +80,7 @@ stages:
       displayName: 'Copy Definitions folder to staging directory'
       inputs:
         contents: |
-          DfoToa.Domain/Definitions/*.*
+          $(mainProject)/**/Definitions/*.*
         targetFolder: $(Build.ArtifactStagingDirectory)/output/Definitions
         flattenFolders: true
         
