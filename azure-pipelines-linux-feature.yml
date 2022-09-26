@@ -87,5 +87,5 @@ stages:
     - task: PublishBuildArtifacts@1
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)/output
-        ArtifactName: artifacts.feature.$(Build.BuildNumber)
+        ArtifactName: artifacts.linux.feature.$(Build.BuildNumber)
       displayName: 'Publish artifacts'
