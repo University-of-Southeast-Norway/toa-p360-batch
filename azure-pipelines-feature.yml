@@ -15,6 +15,7 @@ pool:
 
 variables:
   solution: '**/dfo_toa_manual.net48.sln'
+  mainProject: 'Dfo.Manual'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -37,7 +38,7 @@ stages:
     - task: CmdLine@2
       displayName: 'Copy _general.example.json to _general.json'
       inputs:
-        script: copy $(Build.SourcesDirectory)\Dfo.Manual\JSON\_general.example.json $(Build.SourcesDirectory)\Dfo.Manual\JSON\_general.json
+        script: copy $(Build.SourcesDirectory)\$(mainProject)\JSON\_general.example.json $(Build.SourcesDirectory)\$(mainProject)\JSON\_general.json
       
     - task: VSBuild@1
       inputs:
@@ -63,22 +64,29 @@ stages:
       displayName: 'Copy artifacts to staging directory'
       inputs:
         contents: |
-          bin\**\?(*.exe|*.dll|*.exe.config)
+          $(mainProject)\bin\**\?(*.exe|*.dll|*.exe.config)
         targetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: true
 
     - task: CopyFiles@2
-      displayName: 'Copy _general.json and Definitions to staging directory'
+      displayName: 'Copy _general.example.json to staging directory'
       inputs:
         contents: |
-          Dfo.Manual\JSON\_general.json
-          Definitions\*
-        targetFolder: $(Build.ArtifactStagingDirectory)
-        flattenFolders: false
+          $(mainProject)/JSON/_general.example.json
+        targetFolder: $(Build.ArtifactStagingDirectory)/output/JSON
+        flattenFolders: true
+
+    - task: CopyFiles@2
+      displayName: 'Copy Definitions folder to staging directory'
+      inputs:
+        contents: |
+          $(mainProject)/**/Definitions/*.*
+        targetFolder: $(Build.ArtifactStagingDirectory)/output/Definitions
+        flattenFolders: true
 
     - task: PublishBuildArtifacts@1
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)
-        ArtifactName: artifacts.feature.$(Build.BuildNumber)
+        ArtifactName: artifacts.windows.feature.$(Build.BuildNumber)
       displayName: 'Publish artifacts'
 
