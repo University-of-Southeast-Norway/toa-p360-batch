@@ -65,7 +65,7 @@ stages:
       displayName: 'Copy artifacts to staging directory'
       inputs:
         contents: |
-          bin/**/?(*.exe|*.dll|*.exe.config)
+          DfoToa.BatchRun/bin/**/?(*.exe|*.dll|*.exe.config)
         targetFolder: $(Build.ArtifactStagingDirectory)/output
         flattenFolders: true
 
@@ -74,7 +74,7 @@ stages:
       inputs:
         contents: |
           DfoToa.BatchRun/JSON/_general.json
-          **/Definitions/*
+          **/Definitions/*.*
         targetFolder: $(Build.ArtifactStagingDirectory)/output
         flattenFolders: false
         
