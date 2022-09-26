@@ -11,11 +11,11 @@ trigger:
 - dev/*
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: ubuntu-latest
 
 variables:
-  solution: '**/dfo_toa_manual.net48.sln'
-  mainProject: 'Dfo.Manual'
+  solution: '**/dfo_toa_manual.sln'
+  mainProject: 'DfoToa.BatchRun'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -26,6 +26,12 @@ stages:
   - job: buildAndTest
     displayName: 'Build and test project'
     steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET 6 Core sdk'
+      inputs:
+        packageType: 'sdk'
+        version: '6.0.x'
+        includePreviewVersions: true
     - task: NuGetToolInstaller@1
 
     - task: NuGetCommand@2
@@ -38,34 +44,28 @@ stages:
     - task: CmdLine@2
       displayName: 'Copy _general.example.json to _general.json'
       inputs:
-        script: copy $(Build.SourcesDirectory)\$(mainProject)\JSON\_general.example.json $(Build.SourcesDirectory)\$(mainProject)\JSON\_general.json
-      
-    - task: VSBuild@1
-      inputs:
-        solution: '$(solution)'
-        platform: '$(buildPlatform)'
-        configuration: '$(buildConfiguration)'
+        script: cp $(Build.SourcesDirectory)/$(mainProject)/JSON/_general.example.json $(Build.SourcesDirectory)/$(mainProject)/JSON/_general.json
 
-    - task: VSTest@2
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build project'
       inputs:
-        testSelector: 'testAssemblies'
-        testAssemblyVer2: |
-          **\$(BuildConfiguration)\**\*dfo-toa-manual.test.dll
-          !**\$(BuildConfiguration)\**\*Models*.dll
-          !**\*TestAdapter.dll
-          !**\obj\**
-          !**\$(BuildConfiguration)\**\*IntegrationTests*.dll
-        codeCoverageEnabled: false
-        testRunTitle: '$(Build.DefinitionName) | $(Build.Reason) |$(Build.SourceVersion)'
-        platform: '$(buildPlatform)'
-        configuration: '$(buildConfiguration)'
+        projects: '$(solution)'
+        command: 'build'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Run tests'
+      inputs:
+        command: test
+        projects: '**/*.UnitTest.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
     - task: CopyFiles@2
       displayName: 'Copy artifacts to staging directory'
       inputs:
         contents: |
-          $(mainProject)\bin\**\?(*.exe|*.dll|*.exe.config)
-        targetFolder: $(Build.ArtifactStagingDirectory)
+          $(mainProject)/bin/**/?(*.exe|*.dll|*.exe.config)
+        targetFolder: $(Build.ArtifactStagingDirectory)/output
         flattenFolders: true
 
     - task: CopyFiles@2
@@ -83,10 +83,9 @@ stages:
           $(mainProject)/**/Definitions/*.*
         targetFolder: $(Build.ArtifactStagingDirectory)/output/Definitions
         flattenFolders: true
-
+        
     - task: PublishBuildArtifacts@1
       inputs:
-        pathToPublish: $(Build.ArtifactStagingDirectory)
-        ArtifactName: artifacts.windows.feature.$(Build.BuildNumber)
+        pathToPublish: $(Build.ArtifactStagingDirectory)/output
+        ArtifactName: artifacts.linux.feature.$(Build.BuildNumber)
       displayName: 'Publish artifacts'
-

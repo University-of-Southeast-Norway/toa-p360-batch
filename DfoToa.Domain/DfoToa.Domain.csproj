@@ -19,8 +19,8 @@
     <PackageReference Include="InformationManager.Api.Client" Version="1.0.1" />
     <PackageReference Include="KS.Fiks.Maskinporten.Client" Version="1.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="P360Client" Version="1.0.4" />
-    <PackageReference Include="P360Client.Domain" Version="1.0.5" />
+    <PackageReference Include="P360Client" Version="1.0.6" />
+    <PackageReference Include="P360Client.Domain" Version="1.0.9" />
   </ItemGroup>
 
 </Project>

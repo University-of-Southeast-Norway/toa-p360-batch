@@ -7,7 +7,6 @@ using Ks.Fiks.Maskinporten.Client;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Collections.Generic;
-using dfo_toa_manual.DFO;
 using P360Client.Domain;
 using System.Runtime.Remoting.Contexts;
 using DfoToa.Domain;
