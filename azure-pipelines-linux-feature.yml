@@ -43,7 +43,7 @@ stages:
     - task: CmdLine@2
       displayName: 'Copy _general.example.json to _general.json'
       inputs:
-        script: copy $(Build.SourcesDirectory)/DfoToa.BatchRun/JSON/_general.example.json $(Build.SourcesDirectory)/DfoToa.BatchRun/JSON/_general.json
+        script: cp $(Build.SourcesDirectory)/DfoToa.BatchRun/JSON/_general.example.json $(Build.SourcesDirectory)/DfoToa.BatchRun/JSON/_general.json
 
     - script: dotnet build --configuration $(buildConfiguration)
       displayName: 'dotnet build $(buildConfiguration)'
