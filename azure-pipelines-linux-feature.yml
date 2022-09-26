@@ -45,8 +45,6 @@ stages:
       inputs:
         script: cp $(Build.SourcesDirectory)/DfoToa.BatchRun/JSON/_general.example.json $(Build.SourcesDirectory)/DfoToa.BatchRun/JSON/_general.json
 
-#    - script: dotnet build --configuration $(buildConfiguration)
-#      displayName: 'dotnet build $(buildConfiguration)'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build project'
@@ -70,13 +68,20 @@ stages:
         flattenFolders: true
 
     - task: CopyFiles@2
-      displayName: 'Copy _general.json and Definitions to staging directory'
+      displayName: 'Copy _general.example.json to staging directory'
       inputs:
         contents: |
-          DfoToa.BatchRun/JSON/_general.json
-          **/Definitions/*.*
-        targetFolder: $(Build.ArtifactStagingDirectory)/output
-        flattenFolders: false
+          DfoToa.BatchRun/JSON/_general.example.json
+        targetFolder: $(Build.ArtifactStagingDirectory)/output/JSON
+        flattenFolders: true
+
+    - task: CopyFiles@2
+      displayName: 'Copy Definitions folder to staging directory'
+      inputs:
+        contents: |
+          DfoToa.Domain/Definitions/*.*
+        targetFolder: $(Build.ArtifactStagingDirectory)/output/Definitions
+        flattenFolders: true
         
     - task: PublishBuildArtifacts@1
       inputs:
