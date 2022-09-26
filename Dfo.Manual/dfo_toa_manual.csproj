@@ -43,11 +43,11 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="P360Client, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\P360Client.1.0.4\lib\net48\P360Client.dll</HintPath>
+    <Reference Include="P360Client, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\P360Client.1.0.6\lib\net48\P360Client.dll</HintPath>
     </Reference>
-    <Reference Include="P360Client.Domain, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\P360Client.Domain.1.0.5\lib\net48\P360Client.Domain.dll</HintPath>
+    <Reference Include="P360Client.Domain, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\P360Client.Domain.1.0.9\lib\net48\P360Client.Domain.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -101,54 +101,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Definitions\create_case.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\create_case_template.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\create_document.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\create_document_template.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\get_cases.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\get_cases_result.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\get_cases_result_template.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\get_cases_template.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\get_private_persons.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\get_private_persons_template.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\synchronize_private_person.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\synchronize_private_person_template.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\update_document.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\update_document_template.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\upload_file.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Definitions\upload_file_template.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Definitions\create_case.json" />
+    <None Include="Definitions\create_case_template.json" />
+    <None Include="Definitions\create_document.json" />
+    <None Include="Definitions\create_document_template.json" />
+    <None Include="Definitions\get_cases.json" />
+    <None Include="Definitions\get_cases_result.json" />
+    <None Include="Definitions\get_cases_result_template.json" />
+    <None Include="Definitions\get_cases_template.json" />
+    <None Include="Definitions\get_private_persons.json" />
+    <None Include="Definitions\get_private_persons_template.json" />
+    <None Include="Definitions\synchronize_private_person.json" />
+    <None Include="Definitions\synchronize_private_person_template.json" />
+    <None Include="Definitions\update_document.json" />
+    <None Include="Definitions\update_document_template.json" />
+    <None Include="Definitions\upload_file.json" />
+    <None Include="Definitions\upload_file_template.json" />
     <None Include="JSON\_general.example.json" />
     <None Include="JSON\_general.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
