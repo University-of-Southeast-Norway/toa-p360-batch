@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="DfoClient" Version="1.0.1" />
-    <PackageReference Include="InformationManager.Api.Client" Version="1.0.1" />
     <PackageReference Include="KS.Fiks.Maskinporten.Client" Version="1.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
