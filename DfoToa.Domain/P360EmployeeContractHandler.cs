@@ -1,7 +1,9 @@
 ﻿using dfo_toa_manual.DFO;
 using P360Client.Domain;
+using System.IO;
 #if NET48
 using System.Threading.Tasks;
+using System.IO;
 #endif
 
 namespace DfoToa.Domain
@@ -21,8 +23,9 @@ namespace DfoToa.Domain
             contractFile.Title = contract.ContractId;
             contractFile.Format = "pdf";
             contractFile.Base64Data = contract.FileContent;
-            P360BusinessLogic.Context = Context;
-            await P360BusinessLogic.Run(employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
+            P360BusinessLogic.Init(Context);
+            var runResult = new RunResult();
+            await P360BusinessLogic.Run(runResult, employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
         }
     }
 }
