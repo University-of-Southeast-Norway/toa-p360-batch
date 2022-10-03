@@ -11,5 +11,8 @@ namespace DfoToa.Domain
         string MaskinportenTokenEndpoint { get; }
         string MaskinportenIssuer { get; }
         string MaskinportenScope { get; }
+        string StateFolder { get; }
+        IReport Reporter { get; }
+        IHandleStateFiles StateFileHandler { get; }
     }
 }

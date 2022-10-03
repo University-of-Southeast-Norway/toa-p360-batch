@@ -43,11 +43,11 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="P360Client, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\P360Client.1.0.6\lib\net48\P360Client.dll</HintPath>
+    <Reference Include="P360Client, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\P360Client.2.0.2\lib\net48\P360Client.dll</HintPath>
     </Reference>
-    <Reference Include="P360Client.Domain, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\P360Client.Domain.1.0.9\lib\net48\P360Client.Domain.dll</HintPath>
+    <Reference Include="P360Client.Domain, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\P360Client.Domain.2.0.0\lib\net48\P360Client.Domain.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

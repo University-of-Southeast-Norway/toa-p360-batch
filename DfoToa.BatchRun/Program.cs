@@ -21,14 +21,16 @@ if (proceed)
 {
     Console.WriteLine("Fetching contracts from " + dateFrom + " to " + dateTo + "...");
 
-    try
+    using (var context = DefaultContext.Current)
     {
-        await new ArchiveHandler(DefaultContext.Current).Archive(new P360EmployeeContractHandler(DefaultContext.Current),
-            DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
-            DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
+        try
+        {
+            await new ArchiveHandler(context).Archive(new P360EmployeeContractHandler(context),
+                DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
+                DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
+        }
+        catch (Exception ex) { Log.LogToFile(ex.ToString()); }
     }
-    catch (Exception ex) { Log.LogToFile(ex.ToString()); }
-    finally { Log.Flush(); }
 }
 
 Console.WriteLine("Arkivering avsluttet");

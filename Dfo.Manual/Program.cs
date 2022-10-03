@@ -31,18 +31,20 @@ namespace dfo_toa_manual
             Boolean proceed = Console.ReadLine() == "ja" ? true : false;
 #endif
 
-            if (proceed)
+            using (var context = DefaultContext.Current)
             {
-                Console.WriteLine("Fetching contracts from " + dateFrom + " to " + dateTo + "...");
-
-                try
+                if (proceed)
                 {
-                    await new ArchiveHandler(DefaultContext.Current).Archive(new P360EmployeeContractHandler(DefaultContext.Current),
-                        DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
-                        DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
+                    Console.WriteLine("Fetching contracts from " + dateFrom + " to " + dateTo + "...");
+
+                    try
+                    {
+                        await new ArchiveHandler(context).Archive(new P360EmployeeContractHandler(context),
+                            DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
+                            DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
+                    }
+                    catch (Exception ex) { Log.LogToFile(ex.ToString()); }
                 }
-                catch (Exception ex) { Log.LogToFile(ex.ToString()); }
-                finally { Log.Flush(); }
             }
 
             Console.WriteLine("Arkivering avsluttet");
