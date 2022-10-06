@@ -11,6 +11,7 @@ using P360Client.Domain;
 using System.Runtime.Remoting.Contexts;
 using DfoToa.Domain;
 using System.Globalization;
+using System.Linq;
 
 namespace dfo_toa_manual
 {
@@ -31,18 +32,23 @@ namespace dfo_toa_manual
             Boolean proceed = Console.ReadLine() == "ja" ? true : false;
 #endif
 
-            if (proceed)
+            using (var context = DefaultContext.Current)
             {
-                Console.WriteLine("Fetching contracts from " + dateFrom + " to " + dateTo + "...");
-
-                try
+                if (proceed)
                 {
-                    await new ArchiveHandler(DefaultContext.Current).Archive(new P360EmployeeContractHandler(DefaultContext.Current),
-                        DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
-                        DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
+                    Console.WriteLine("Fetching contracts from " + dateFrom + " to " + dateTo + "...");
+
+                    try
+                    {
+                        var handler = new ArchiveHandler(context);
+                        var contracts = await handler.GetContractsFromDfo(DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
+                            DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
+                        Console.Write($"Fant {contracts.Count()} kontrakter. Ønsker du å arkivere disse? (Ja/Nei) ");
+                        if (Console.ReadLine()?.ToLower()?.Contains("n") == true) return;
+                        await handler.Archive(new P360EmployeeContractHandler(context), contracts);
+                    }
+                    catch (Exception ex) { Log.LogToFile(ex.ToString()); }
                 }
-                catch (Exception ex) { Log.LogToFile(ex.ToString()); }
-                finally { Log.Flush(); }
             }
 
             Console.WriteLine("Arkivering avsluttet");

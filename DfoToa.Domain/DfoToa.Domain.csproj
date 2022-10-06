@@ -16,10 +16,11 @@
 
   <ItemGroup>
     <PackageReference Include="DfoClient" Version="1.0.1" />
+    <PackageReference Include="InformationManager.Api.Client" Version="1.0.1" />
     <PackageReference Include="KS.Fiks.Maskinporten.Client" Version="1.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="P360Client" Version="2.0.2" />
-    <PackageReference Include="P360Client.Domain" Version="1.1.0" />
+    <PackageReference Include="P360Client" Version="2.0.4" />
+    <PackageReference Include="P360Client.Domain" Version="3.0.1" />
   </ItemGroup>
 
 </Project>

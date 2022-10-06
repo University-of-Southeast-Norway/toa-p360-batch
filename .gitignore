@@ -10,7 +10,7 @@
 # Project specific files
 **/_general.json
 *.p12
-
+**/Dfo.Manual/Definitions/*.*
 
 # User-specific files
 *.suo
