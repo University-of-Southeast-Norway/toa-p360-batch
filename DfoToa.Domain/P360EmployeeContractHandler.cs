@@ -43,7 +43,7 @@ namespace DfoToa.Domain
                 }
                 else
                 {
-                    await P360BusinessLogic.Run(runResult, employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
+                    await P360BusinessLogic.RunUploadFileToPrivatePerson(runResult, employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
                 }
                 await Context.Reporter.Report(runResult.ToString());
             }
