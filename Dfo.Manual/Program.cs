@@ -11,6 +11,7 @@ using P360Client.Domain;
 using System.Runtime.Remoting.Contexts;
 using DfoToa.Domain;
 using System.Globalization;
+using System.Linq;
 
 namespace dfo_toa_manual
 {
@@ -39,9 +40,12 @@ namespace dfo_toa_manual
 
                     try
                     {
-                        await new ArchiveHandler(context).Archive(new P360EmployeeContractHandler(context),
-                            DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
+                        var handler = new ArchiveHandler(context);
+                        var contracts = await handler.GetContractsFromDfo(DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
                             DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
+                        Console.Write($"Fant {contracts.Count()} kontrakter. Ønsker du å arkivere disse? (Ja/Nei) ");
+                        if (Console.ReadLine()?.ToLower()?.Contains("n") == true) return;
+                        await handler.Archive(new P360EmployeeContractHandler(context), contracts);
                     }
                     catch (Exception ex) { Log.LogToFile(ex.ToString()); }
                 }
