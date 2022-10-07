@@ -22,8 +22,9 @@ namespace DfoToa.Domain
         {
             DocumentService.Files2 contractFile = new DocumentService.Files2
             {
-                Title = contract.ContractId,
+                Title = $"Signert avtale {contract.ContractId}",
                 Format = "pdf",
+                Note = Utility.CreateChecksum(contract.FileContent),
                 Base64Data = contract.FileContent
             };
             P360BusinessLogic.Init(Context);
