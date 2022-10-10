@@ -2,24 +2,37 @@
 using DfoToa.BatchRun;
 using System.Globalization;
 
-#if DEBUG
 
-String dateFrom = "20220910";
-String dateTo = "20220911";
+String? dateFrom = null;
+String? dateTo = null;
+
+#if DEBUG
+dateFrom = "20220910";
+dateTo = "20220911";
 Boolean proceed = true;
 #else
-            Console.Write("Angi startdato (yyyymmdd): ");
-            String dateFrom = Console.ReadLine();
-            Console.Write("Angi sluttdato (yyyymmdd): ");
-            String dateTo = Console.ReadLine();
-            Console.WriteLine("Er du sikker på at du vil arkivere kontrakter fra " + dateFrom + " til " + dateTo + "? Skriv ja for å fortsette eller trykk enter for å avslutte.");
-            Boolean proceed = Console.ReadLine() == "ja" ? true : false;
+
+if (Environment.GetCommandLineArgs().Length > 1) dateFrom = Environment.GetCommandLineArgs()[1];
+if (Environment.GetCommandLineArgs().Length > 2) dateTo = Environment.GetCommandLineArgs()[2];
+else if (dateFrom != null) dateTo = DateTimeOffset.Now.Date.ToString("yyyyMMdd");
+if (dateFrom == null)
+{
+    Console.Write("Angi startdato (yyyymmdd): ");
+    dateFrom = Console.ReadLine();
+}
+if (dateTo == null)
+{
+    Console.Write("Angi sluttdato (yyyymmdd): ");
+    dateTo = Console.ReadLine();
+}
+Console.WriteLine("Er du sikker på at du vil arkivere avtaler fra " + dateFrom + " til " + dateTo + "? Skriv ja for å fortsette eller trykk enter for å avslutte.");
+Boolean proceed = Console.ReadLine() == "ja" ? true : false;
 #endif
 
 
 if (proceed)
 {
-    Console.WriteLine("Fetching contracts from " + dateFrom + " to " + dateTo + "...");
+    Console.WriteLine("Henter avtaler " + dateFrom + " to " + dateTo + "...");
 
     using (var context = DefaultContext.Current)
     {
@@ -28,7 +41,7 @@ if (proceed)
             var handler = new ArchiveHandler(context);
             var contracts = await handler.GetContractsFromDfo(DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
                 DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
-            Console.Write($"Fant {contracts.Count()} kontrakter. Ønsker du å arkivere disse? (Ja/Nei) ");
+            Console.Write($"Fant {contracts.Count()} avtaler. Ønsker du å arkivere disse? (Ja/Nei) ");
             if (Console.ReadLine()?.ToLower()?.Contains("n") == true) return;
             await handler.Archive(new P360EmployeeContractHandler(context), contracts);
         }
