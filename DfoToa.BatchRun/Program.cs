@@ -26,18 +26,21 @@ if (dateTo == null)
     dateTo = Console.ReadLine();
 }
 Console.WriteLine("Er du sikker på at du vil arkivere avtaler fra " + dateFrom + " til " + dateTo + "? Skriv ja for å fortsette eller trykk enter for å avslutte.");
+DefaultContext.FromDate = dateFrom;
+DefaultContext.ToDate = dateTo;
 Boolean proceed = Console.ReadLine() == "ja" ? true : false;
 #endif
 
 
 if (proceed)
 {
-    Console.WriteLine("Henter avtaler " + dateFrom + " to " + dateTo + "...");
+    Console.WriteLine("Henter avtaler " + dateFrom + " til " + dateTo + "...");
 
     using (var context = DefaultContext.Current)
     {
         try
         {
+            context.CurrentLogger.WriteToLog($"Henter avtaler {dateFrom} til {dateTo}...");
             var handler = new ArchiveHandler(context);
             var contracts = await handler.GetContractsFromDfo(DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
                 DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
