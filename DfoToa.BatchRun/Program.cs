@@ -48,7 +48,11 @@ if (proceed)
             if (Console.ReadLine()?.ToLower()?.Contains("n") == true) return;
             await handler.Archive(new P360EmployeeContractHandler(context), contracts);
         }
-        catch (Exception ex) { Log.LogToFile(ex.ToString()); }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Log.LogToFile(ex.ToString());
+        }
     }
 }
 

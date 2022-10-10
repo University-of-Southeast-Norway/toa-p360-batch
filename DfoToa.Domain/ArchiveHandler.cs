@@ -35,30 +35,30 @@ namespace DfoToa.Domain
             List<string> contractSequenceList = await GetContractsFromDfo(from, to);
 
             Console.WriteLine($"Prosesserer {contractSequenceList.Count} kontrakter...");
-            Context.CurrentLogger.WriteToLog($"Processing {contractSequenceList.Count} contracts");
+            Context.CurrentLogger.WriteToLog($"Prosesserer {contractSequenceList.Count} kontrakter...");
 
             foreach (string contractSequenceNumber in contractSequenceList)
             {
                 Contract contract = await _dfoClient.GetContractAsync(contractSequenceNumber);
-                string message = $"Working on {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}";
+                string message = $"Arbdeider med {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}";
                 Console.WriteLine(message);
                 Context.CurrentLogger.WriteToLog(message);
 
                 try
                 {
                     EmployeeContract employeeContract = await _dfoClient.GetEmployeeContractAsync(contract.EmployeeId, contract.ContractId);
-                    Console.WriteLine($"Found {employeeContract}");
-                    Context.CurrentLogger.WriteToLog($"Found {employeeContract}");
+                    Console.WriteLine($"Fant {employeeContract}");
+                    Context.CurrentLogger.WriteToLog($"Fant {employeeContract}");
                     Employee employee = await _dfoClient.GetEmployee(employeeContract.Id);
-                    Console.WriteLine($"Found {employee}");
-                    Context.CurrentLogger.WriteToLog($"Found {employee}");
+                    Console.WriteLine($"Fant {employee}");
+                    Context.CurrentLogger.WriteToLog($"Fant {employee}");
 
                     await employeeContractHandler.RunAsync(employee, contract);
                 }
                 catch (Exception ex)
                 {
                     Context.CurrentLogger.WriteToLog(ex);
-                    Console.WriteLine($"Unhandled error occured:{Environment.NewLine}{ex}");
+                    Console.WriteLine($"Uhåndtert feil har oppstått:{Environment.NewLine}{ex}");
                 }
             }
         }
