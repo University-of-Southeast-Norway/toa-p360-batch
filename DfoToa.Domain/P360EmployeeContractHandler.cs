@@ -46,7 +46,7 @@ namespace DfoToa.Domain
                 {
                     await P360BusinessLogic.RunUploadFileToPrivatePerson(runResult, employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile);
                 }
-                await Context.Reporter.Report(runResult.ToString());
+                await Context.Reporter.Report($"{nameof(contract.SequenceNumber)}:{contract.SequenceNumber};{nameof(contract.ContractId)}:{contract.ContractId};{nameof(contract.EmployeeId)}:{contract.EmployeeId};{runResult}");
             }
             finally
             {

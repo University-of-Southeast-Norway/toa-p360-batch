@@ -40,18 +40,26 @@ namespace DfoToa.Domain
             foreach (string contractSequenceNumber in contractSequenceList)
             {
                 Contract contract = await _dfoClient.GetContractAsync(contractSequenceNumber);
-                Console.WriteLine($"Working on {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}");
+                string message = $"Working on {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}";
+                Console.WriteLine(message);
+                Context.CurrentLogger.WriteToLog(message);
 
                 try
                 {
                     EmployeeContract employeeContract = await _dfoClient.GetEmployeeContractAsync(contract.EmployeeId, contract.ContractId);
                     Console.WriteLine($"Found {employeeContract}");
+                    Context.CurrentLogger.WriteToLog($"Found {employeeContract}");
                     Employee employee = await _dfoClient.GetEmployee(employeeContract.Id);
                     Console.WriteLine($"Found {employee}");
+                    Context.CurrentLogger.WriteToLog($"Found {employee}");
 
                     await employeeContractHandler.RunAsync(employee, contract);
                 }
-                catch (Exception ex) { Console.WriteLine($"Unhandled error occured:{Environment.NewLine}{ex}"); }
+                catch (Exception ex)
+                {
+                    Context.CurrentLogger.WriteToLog(ex);
+                    Console.WriteLine($"Unhandled error occured:{Environment.NewLine}{ex}");
+                }
             }
         }
 
@@ -59,24 +67,34 @@ namespace DfoToa.Domain
         {
             await init();
 
-            Console.WriteLine($"Prosesserer {contractSequenceList.Count} kontrakter...");
-            Context.CurrentLogger.WriteToLog($"Processing {contractSequenceList.Count} contracts");
+            Console.WriteLine($"Prosesserer {contractSequenceList.Count} avtaler...");
+            Context.CurrentLogger.WriteToLog($"Prosesserer {contractSequenceList.Count} avtaler...");
 
-            foreach (string contractSequenceNumber in contractSequenceList)
+            for (int i = 0; i < contractSequenceList.Count; i++)
             {
+                string contractSequenceNumber = contractSequenceList[i];
                 Contract contract = await _dfoClient.GetContractAsync(contractSequenceNumber);
-                Console.WriteLine($"Working on {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}");
+                string message = $"Jobber med {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}";
+                Console.WriteLine(message);
+                Context.CurrentLogger.WriteToLog(message);
 
                 try
                 {
                     EmployeeContract employeeContract = await _dfoClient.GetEmployeeContractAsync(contract.EmployeeId, contract.ContractId);
-                    Console.WriteLine($"Found {employeeContract}");
+                    Console.WriteLine($"Fant avtale {employeeContract}");
+                    Context.CurrentLogger.WriteToLog($"Fant avtale {employeeContract}");
                     Employee employee = await _dfoClient.GetEmployee(employeeContract.Id);
-                    Console.WriteLine($"Found {employee}");
+                    Console.WriteLine($"Fant ansatt {employee}");
+                    Context.CurrentLogger.WriteToLog($"Fant ansatt {employee}");
 
                     await employeeContractHandler.RunAsync(employee, contract);
                 }
-                catch (Exception ex) { Console.WriteLine($"Unhandled error occured:{Environment.NewLine}{ex}"); }
+                catch (Exception ex)
+                {
+                    Context.CurrentLogger.WriteToLog(ex);
+                    Console.WriteLine($"Uhåndtert feil har oppstått:{Environment.NewLine}{ex}");
+                }
+                Console.WriteLine($"Avtaler prosessert: {i + 1} av {contractSequenceList.Count}");
             }
         }
 
@@ -90,7 +108,7 @@ namespace DfoToa.Domain
         {
             if (_dfoClient != null) return;
 
-            Context.CurrentLogger.WriteToLog("Initializing...");
+            Context.CurrentLogger.WriteToLog("Initierer...");
 
             var certificate = new X509Certificate2(
                 Context.MaskinportenCertificatePath,
@@ -106,9 +124,9 @@ namespace DfoToa.Domain
 
             var maskinportenClient = new MaskinportenClient(configuration);
 
-            Context.CurrentLogger.WriteToLog("Get access token from Maskinporten...");
+            Context.CurrentLogger.WriteToLog("Henter token fra Maskinporten...");
             var token = await maskinportenClient.GetAccessToken(Context.MaskinportenScope);
-            Context.CurrentLogger.WriteToLog($"Token received... ({token.Token.Substring(10)}...)");
+            Context.CurrentLogger.WriteToLog($"Token mottatt... ({token.Token.Substring(0, 10)}...)");
             _dfoClient = new Client(Context.DfoApiBaseAddress, token.Token);
         }
     }
