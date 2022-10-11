@@ -58,7 +58,7 @@ namespace DfoToa.BatchRun
             Console.WriteLine("argumenter: [-f | --from <yyyymmdd>] [-t | --to <yyyymmdd>] [-s | --silent]");
             Console.WriteLine("-f, --from\tFra dato med format yyyymmdd");
             Console.WriteLine("-t, --to\tTil dato med format yyyymmdd");
-            Console.WriteLine("-s, --silent\tEksekverer uten input fra kommando, krever at -f, --fra er satt");
+            Console.WriteLine("-s, --silent\tEksekverer uten input fra kommando, krever at -f, --from er satt");
             return _needHelp;
         }
     }
