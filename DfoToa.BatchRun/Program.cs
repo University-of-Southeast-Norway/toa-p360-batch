@@ -6,15 +6,15 @@ using System.Globalization;
 String? dateFrom = null;
 String? dateTo = null;
 
-#if RELEASE
+var argumentUtility = new ArgumentUtility(Environment.GetCommandLineArgs());
+var consoleHelper = new ConsoleHelper(argumentUtility.Silent);
+#if DEBUG
 dateFrom = "20220910";
 dateTo = "20220911";
 Boolean proceed = true;
 #else
-var argumentUtility = new ArgumentUtility(Environment.GetCommandLineArgs());
 if (argumentUtility.HelpNeeded()) return;
 
-var consoleHelper = new ConsoleHelper(argumentUtility.Silent);
 
 dateFrom = argumentUtility.FromDate;
 dateTo = argumentUtility.ToDate;
