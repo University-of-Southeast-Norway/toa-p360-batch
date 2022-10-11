@@ -39,6 +39,7 @@ namespace DfoToa.Domain
 
             foreach (string contractSequenceNumber in contractSequenceList)
             {
+                if (_token.IsExpiring()) await Reset();
                 Contract contract = await _dfoClient.GetContractAsync(contractSequenceNumber);
                 string message = $"Arbdeider med {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}";
                 Console.WriteLine(message);
@@ -72,6 +73,7 @@ namespace DfoToa.Domain
 
             for (int i = 0; i < contractSequenceList.Count; i++)
             {
+                if (_token.IsExpiring()) await Reset();
                 string contractSequenceNumber = contractSequenceList[i];
                 Contract contract = await _dfoClient.GetContractAsync(contractSequenceNumber);
                 string message = $"Jobber med {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}";
@@ -104,6 +106,12 @@ namespace DfoToa.Domain
             return await _dfoClient.GetContractSequenceList(from, to);
         }
 
+        private async Task Reset()
+        {
+            _dfoClient = null;
+            await init();
+        }
+
         private async Task init()
         {
             if (_dfoClient != null) return;
@@ -125,9 +133,9 @@ namespace DfoToa.Domain
             var maskinportenClient = new MaskinportenClient(configuration);
 
             Context.CurrentLogger.WriteToLog("Henter token fra Maskinporten...");
-            var token = await maskinportenClient.GetAccessToken(Context.MaskinportenScope);
-            Context.CurrentLogger.WriteToLog($"Token mottatt... ({token.Token.Substring(0, 10)}...)");
-            _dfoClient = new Client(Context.DfoApiBaseAddress, token.Token);
+            _token = await maskinportenClient.GetAccessToken(Context.MaskinportenScope);
+            Context.CurrentLogger.WriteToLog($"Token mottatt... ({_token.Token.Substring(0, 10)}...)");
+            _dfoClient = new Client(Context.DfoApiBaseAddress, _token.Token);
         }
     }
 }
