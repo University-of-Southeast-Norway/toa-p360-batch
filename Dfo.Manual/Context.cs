@@ -51,7 +51,7 @@ namespace dfo_toa_manual
         public string P360ApiKey => _dynamicGeneral.p360ApiKey.ToString();
         public string InProductionDate => _dynamicGeneral.inProductionDate.ToString();
         public ILog CurrentLogger => _currentLogger;
-        public string LogFilePath => _dynamicGeneral.logFilePath.ToString();
+        public string LogFilePath => $"{_dynamicGeneral.logFolder.ToString().Trim('/').Trim('\\')}/log_{DateTimeOffset.Now:dd.MM.yyyy-HH.mm.ss}.txt";
         public string MaskinportenCertificatePath => _dynamicGeneral.maskinporten.certificate.path.ToString();
         public string MaskinportenCertificatePassword => _dynamicGeneral.maskinporten.certificate.password.ToString();
         public string MaskinportenAudience => _dynamicGeneral.maskinporten.audience.ToString();
@@ -60,8 +60,10 @@ namespace dfo_toa_manual
         public string MaskinportenScope => _dynamicGeneral.maskinporten.scope.ToString();
         public string DfoApiBaseAddress => _dynamicGeneral.dfo.api_base.ToString();
         public string StateFolder => _dynamicGeneral.stateFolder.ToString();
-        public string ReportFilePath => _dynamicGeneral.reportFilePath.ToString();
+        public string ReportFilePath => $"{_dynamicGeneral.reportFolder.ToString().Trim('/').Trim('\\')}/report_{FromDate}-{ToDate}.txt";
 
+        public static string FromDate { get; set; }
+        public static string ToDate { get; set; }
         public IReport Reporter => _reporter ?? (_reporter = new ReportToFile(ReportFilePath));
         public IHandleStateFiles StateFileHandler => _stateFileHandler ?? (_stateFileHandler = new DStepFileHandler(StateFolder));
 
