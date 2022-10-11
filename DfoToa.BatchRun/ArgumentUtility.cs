@@ -54,7 +54,8 @@ namespace DfoToa.BatchRun
 
         internal bool HelpNeeded()
         {
-            Console.WriteLine("usage: [-f | --from <yyyymmdd>] [-t | --to <yyyymmdd>] [-s | --silent]");
+            if (!_needHelp) return false;
+            Console.WriteLine("argumenter: [-f | --from <yyyymmdd>] [-t | --to <yyyymmdd>] [-s | --silent]");
             Console.WriteLine("-f, --from\tFra dato med format yyyymmdd");
             Console.WriteLine("-t, --to\tTil dato med format yyyymmdd");
             Console.WriteLine("-s, --silent\tEksekverer uten input fra kommando, krever at -f, --fra er satt");
