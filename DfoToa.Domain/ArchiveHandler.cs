@@ -1,5 +1,4 @@
-﻿using dfo_toa_manual.DFO;
-using DfoClient;
+﻿using DfoClient;
 using Ks.Fiks.Maskinporten.Client;
 using Newtonsoft.Json.Linq;
 using P360Client.Domain;

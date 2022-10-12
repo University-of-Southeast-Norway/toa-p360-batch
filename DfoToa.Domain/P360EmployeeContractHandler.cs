@@ -1,4 +1,4 @@
-﻿using dfo_toa_manual.DFO;
+﻿using DfoClient;
 using P360Client.Domain;
 #if NET48
 using System.Threading.Tasks;

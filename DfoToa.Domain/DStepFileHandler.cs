@@ -1,4 +1,4 @@
-﻿using dfo_toa_manual.DFO;
+﻿using DfoClient;
 using System.Security.Cryptography;
 using System.Text;
 #if NET48
