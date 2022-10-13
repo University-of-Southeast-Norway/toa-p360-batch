@@ -30,24 +30,26 @@ stages:
         includePreviewVersions: true
     - task: NuGetToolInstaller@1
 
-    - task: NuGetCommand@2
-      inputs:
-        command: 'restore'
-        restoreSolution: '$(solution)'
-        feedsToUse: 'config'
-        nugetConfigPath: 'nuget.config'
-
     - task: CmdLine@2
       displayName: 'Copy _general.example.json to _general.json'
       inputs:
         script: cp $(Build.SourcesDirectory)/$(mainProject)/JSON/_general.example.json $(Build.SourcesDirectory)/$(mainProject)/JSON/_general.json
 
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore packages'
+      inputs:
+        projects: '$(solution)'
+        command: 'restore'
+        selectOrConfig: config
+        nugetConfigPath: '$(Build.SourcesDirectory)/nuget.config'
+        verbosityRestore: normal
 
     - task: DotNetCoreCLI@2
       displayName: 'Build project'
       inputs:
         projects: '$(solution)'
         command: 'build'
+        arguments: '--no-restore'
 
     - task: DotNetCoreCLI@2
       displayName: 'Run tests'
