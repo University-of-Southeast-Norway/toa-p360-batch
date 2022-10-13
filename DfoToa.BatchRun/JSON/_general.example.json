@@ -1,5 +1,4 @@
 {
-  "environment": "test", // Should be either test or prod, anything else will end in an exception.
   "inProductionDate": "2023-01-01", // yyyy-MM-dd.
   "logFolder": "c:/temp/",
   "reportFolder": "c:/temp/",
