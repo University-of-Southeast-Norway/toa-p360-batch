@@ -32,8 +32,8 @@ stages:
       inputs:
         command: 'restore'
         restoreSolution: '$(solution)'
-        feedsToUse: 'select'
-        vstsFeed: 'fdad029d-ef21-4332-8721-280783508a77'
+        feedsToUse: 'config'
+        nugetConfigPath: 'nuget.config'
 
     - task: CmdLine@2
       displayName: 'Copy _general.example.json to _general.json'

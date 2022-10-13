@@ -1,4 +1,4 @@
-﻿using dfo_toa_manual.DFO;
+﻿using DfoClient;
 #if NET48
 using System;
 using System.Threading.Tasks;

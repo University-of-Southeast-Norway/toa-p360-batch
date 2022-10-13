@@ -1,8 +1,8 @@
 {
   "environment": "test", // Should be either test or prod, anything else will end in an exception.
   "inProductionDate": "2023-01-01", // yyyy-MM-dd.
-  "logFilePath": "c:\\temp\\DFO_TOA_MANUAL.txt",
-  "reportFilePath": "c:\\temp\\DFO_TOA_REPORT.txt",
+  "logFolder": "c:/temp/",
+  "reportFolder": "c:/temp/",
   "stateFolder": "state",
   "p360ApiKey": "",
   "p360BaseAddress": "",
