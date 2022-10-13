@@ -1,9 +1,11 @@
 {
   "environment": "test", // Should be either test or prod, anything else will end in an exception.
-  "baseAddressTest": "",
-  "baseAddressProd": "",
   "inProductionDate": "2023-01-01", // yyyy-MM-dd.
-  "logFilePath": "c:\\temp\\DFO_TOA_MANUAL.txt",
+  "logFolder": "c:/temp/",
+  "reportFolder": "c:/temp/",
+  "stateFolder": "state",
+  "p360ApiKey": "",
+  "p360BaseAddress": "https://usn.public360online.com", // TEST: https://usn-test.public360online.com
   "dfo": {
     "api_base": "https://api.dfo.no/" // TEST: https://api-test.dfo.no/
   },
