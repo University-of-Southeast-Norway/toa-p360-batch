@@ -1,2 +1,1 @@
-﻿# Configure
-Copy JSON/_general.example.json to JSON/_general.json and fill in the missing values.
+This project is deprecated. Look to [DfoToa.BatchRun](https://github.com/University-of-Southeast-Norway/toa-p360-batch/tree/main/DfoToa.BatchRun).
