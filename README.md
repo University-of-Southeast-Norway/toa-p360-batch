@@ -113,5 +113,5 @@ _logFolder_ – mappe der logger lagres
 
 _reportFolder_ – mappe der rapport på overførte avtaler lagres
 
-_stateFolder_ – mappe som brukes til å holde state på overføring av avtaler, ikke slett innholdet i denne mappen
+_stateFolder_ – mappe som brukes til å holde state på overføring av avtaler. Innhold i denne mappen **bør slettes** en etter en tid i etterkant av en overføring. Dersom man ser behov for å kjøre en periode på nytt bør man avvente med å slette innhold i denne mappen til dette er utført.
 
