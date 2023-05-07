@@ -115,3 +115,8 @@ _reportFolder_ – mappe der rapport på overførte avtaler lagres
 
 _stateFolder_ – mappe som brukes til å holde state på overføring av avtaler. Innhold i denne mappen **bør slettes** etter en tid i etterkant av en overføring. Dersom man ser behov for å kjøre en periode på nytt bør man avvente med å slette innhold i denne mappen til dette er utført.
 
+_api_keys_ - som et alternativ til Maskinporten kan man sette opp autentisering med API-nøkler, for eksempel om man har satt opp en gateway mot DFØ-API i IntArk
+
+_scope_ - det må oppgis header og API-nøkkel for dfo:ansatte dfo:ansatte/infokontrakter dfo:infokontrakter/filer
+  - Som angitt i _general.example.json setter man opp en nøkkel for hvert scope, men det er mulig å gjenbruke samme nøkkel dersom man har valgt å pakke scope sammen i gateway (IntArk)
+ 
