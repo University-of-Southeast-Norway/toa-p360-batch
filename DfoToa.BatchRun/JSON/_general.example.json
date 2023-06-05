@@ -4,7 +4,7 @@
   "reportFolder": "c:/temp/",
   "stateFolder": "state",
   "p360ApiKey": "",
-  "p360BaseAddress": "https://usn.public360online.com", // TEST: https://usn-test.public360online.com
+  "p360BaseAddress": "",
   "dfo": {
     "api_base": "https://api.dfo.no/" // TEST: https://api-test.dfo.no/
   },
@@ -16,6 +16,23 @@
     "audience": "https://maskinporten.no/", // TEST: https://ver2.maskinporten.no/
     "token_endpoint": "https://maskinporten.no/token", // TEST: https://ver2.maskinporten.no/
     "issuer": "", // Get from samarbeidsportalen
-    "scope": "dfo:ansatte dfo:stillinger dfo:organisasjoner dfo:ansatte/infokontrakter dfo:infokontrakter/filer"
-  }
+    "scope": "dfo:ansatte dfo:ansatte/infokontrakter dfo:infokontrakter/filer"
+  },
+  "api_keys": [
+    {
+      "scope": "dfo:ansatte",
+      "header": "X-Gravitee-Api-Key",
+      "value": ""
+    },
+    {
+      "scope": "dfo:ansatte/infokontrakter",
+      "header": "X-Gravitee-Api-Key",
+      "value": ""
+    },
+    {
+      "scope": "dfo:infokontrakter/filer",
+      "header": "X-Gravitee-Api-Key",
+      "value": ""
+    }
+  ]
 }

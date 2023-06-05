@@ -19,6 +19,7 @@ namespace DfoToa.BatchRun
             }
 
             Trace.Write(DateTime.Now + " | " + stringToLog + "\n");
+            Trace.Flush();
         }
 
         public static void Flush()

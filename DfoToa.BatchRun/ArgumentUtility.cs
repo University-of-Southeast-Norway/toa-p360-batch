@@ -20,6 +20,7 @@ namespace DfoToa.BatchRun
         public string? FromDate { get; private set; }
         public string? ToDate { get; private set; }
         public bool Silent { get; private set; }
+        public string? SequenceNumber { get; set; }
 
         private void Init()
         {
@@ -31,6 +32,7 @@ namespace DfoToa.BatchRun
             var indexToDate = argsWithIndex.Where(arg => arg.a.ToLower() == "-t" || arg.a.ToLower() == "--to").Select(arg => arg.i);
             var indexSilent = argsWithIndex.Where(arg => arg.a.ToLower() == "-s" || arg.a.ToLower() == "--silent").Select(arg => arg.i);
             var indexHelp = argsWithIndex.Where(arg => arg.a.ToLower() == "-h" || arg.a.ToLower() == "--help").Select(arg => arg.i);
+            var indexSequenceNumber = argsWithIndex.Where(arg => arg.a.ToLower() == "-n" || arg.a.ToLower() == "--number").Select(arg => arg.i);
             _needHelp = indexHelp != null && indexHelp.Any();
 
             if (indexFromDate != null && indexFromDate.Any())
@@ -39,6 +41,7 @@ namespace DfoToa.BatchRun
                 var range = index..(index + 2);
                 FromDate = _args.Take(range).Last();
             }
+
             if (indexToDate != null && indexToDate.Any())
             {
                 int index = indexToDate.First();
@@ -46,6 +49,14 @@ namespace DfoToa.BatchRun
                 ToDate = _args.Take(range).Last();
             }
             else if (FromDate != null) ToDate = DateTimeOffset.Now.Date.ToString("yyyyMMdd");
+
+            if (indexSequenceNumber != null && indexSequenceNumber.Any())
+            {
+                int index = indexSequenceNumber.First();
+                var range = index..(index + 2);
+                SequenceNumber = _args.Take(range).Last();
+            }
+
             if (indexSilent != null && indexSilent.Any() && FromDate != null)
             {
                 Silent = true;
@@ -55,9 +66,10 @@ namespace DfoToa.BatchRun
         internal bool HelpNeeded()
         {
             if (!_needHelp) return false;
-            Console.WriteLine("argumenter: [-f | --from <yyyymmdd>] [-t | --to <yyyymmdd>] [-s | --silent]");
+            Console.WriteLine("argumenter: [-f | --from <yyyymmdd>] [-t | --to <yyyymmdd>] [-n | --number <sekvensnummer>] [-s | --silent]");
             Console.WriteLine("-f, --from\tFra dato med format yyyymmdd");
             Console.WriteLine("-t, --to\tTil dato med format yyyymmdd");
+            Console.WriteLine("-n, --number\tAngi et spesifikt sekvensnummer som skal arkiveres");
             Console.WriteLine("-s, --silent\tEksekverer uten input fra kommando, krever at -f, --from er satt");
             return _needHelp;
         }
