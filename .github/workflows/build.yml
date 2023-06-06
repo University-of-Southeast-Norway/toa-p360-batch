@@ -1,0 +1,33 @@
+name: dotnet build and package
+
+on: [push]
+
+env:
+  nuget_feed_name: 'USN SDO Azure Artifacts Feed'
+  nuget_feed_source: 'https://pkgs.dev.azure.com/USN-SDO/_packaging/SDO/nuget/v3/index.json'
+  nuget_config: 'nuget.config'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Remove existing entry from NuGet config
+        run: dotnet nuget remove source ${{ env.nuget_feed_name }} --configfile ${{ env.nuget_config }}
+      - name: Auth NuGet
+        run: dotnet nuget add source ${{ env.nuget_feed_source }} --name ${{ env.nuget_feed_name }} --username az --password ${{ secrets.AZURE_DEVOPS_TOKEN }} --configfile ${{ env.nuget_config }}
+      - name: Restore NuGet Packages
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+#      - name: Test
+#        run: dotnet test --no-restore --verbosity normal
