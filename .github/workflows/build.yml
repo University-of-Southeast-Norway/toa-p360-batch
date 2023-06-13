@@ -25,7 +25,7 @@ jobs:
       - name: Remove existing entry from NuGet config
         run: dotnet nuget remove source ${{ env.nuget_feed_name }} --configfile ${{ env.nuget_config }}
       - name: Auth NuGet
-        run: dotnet nuget add source ${{ env.nuget_feed_source }} --name ${{ env.nuget_feed_name }} --username az --password ${{ secrets.AZURE_DEVOPS_TOKEN }} --configfile ${{ env.nuget_config }}
+        run: dotnet nuget add source ${{ env.nuget_feed_source }} --name ${{ env.nuget_feed_name }} --username az --password ${{ env.AZURE_DEVOPS_TOKEN }} --configfile ${{ env.nuget_config }}
       - name: Restore NuGet Packages
         run: dotnet restore
       - name: Build
