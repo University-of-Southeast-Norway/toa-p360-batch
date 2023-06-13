@@ -45,7 +45,21 @@ jobs:
       - name: Test
         run: dotnet test ${{ env.test_project }} --no-restore --verbosity normal
 
-      - uses: ncipollo/release-action@v1
-        name: Create release
+      - name: Archive Linux Release
+        uses: thedoctor0/zip-release@0.7.1
         with:
-          artifacts: "DfoToa.BatchRun/publish/*,**/_general.example.json"
+          type: 'tar.gz'
+          path: DfoToa.BatchRun/publish/linux-64
+          filename: 'release-linux64.tar.gz'
+
+      - name: Archive Windows Release
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          path: DfoToa.BatchRun/publish/windows-64
+          filename: 'release-win64.zip'
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "release-linux64.zip,release-win64.zip"
