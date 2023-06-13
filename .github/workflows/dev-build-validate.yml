@@ -1,6 +1,6 @@
 name: dotnet build and package
 
-on: [push]
+on: [workflow_dispatch]
 
 env:
   nuget_feed_name: 'SDO'
