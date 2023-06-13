@@ -58,7 +58,7 @@ jobs:
         with:
           type: 'zip'
           directory: ${{ github.workspace }}
-          path: DfoToa.BatchRun/publish/windows-64
+          path: DfoToa.BatchRun/publish/win-64
           filename: 'release-win64.zip'
 
       - name: Create release
