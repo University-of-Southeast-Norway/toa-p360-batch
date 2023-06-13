@@ -49,6 +49,7 @@ jobs:
         uses: thedoctor0/zip-release@0.7.1
         with:
           type: 'tar.gz'
+          directory: $GITHUB_WORKSPACE
           path: DfoToa.BatchRun/publish/linux-64
           filename: 'release-linux64.tar.gz'
 
@@ -56,6 +57,7 @@ jobs:
         uses: thedoctor0/zip-release@0.7.1
         with:
           type: 'zip'
+          directory: $GITHUB_WORKSPACE
           path: DfoToa.BatchRun/publish/windows-64
           filename: 'release-win64.zip'
 
