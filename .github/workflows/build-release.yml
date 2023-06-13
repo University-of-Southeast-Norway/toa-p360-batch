@@ -1,0 +1,43 @@
+name: dotnet build and create release
+
+on:
+  push:
+    tags:
+    - 'release-*'
+
+env:
+  nuget_feed_name: 'SDO'
+  nuget_feed_source: 'https://pkgs.dev.azure.com/USN-SDO/_packaging/SDO/nuget/v3/index.json'
+  nuget_config: 'nuget.config'
+  test_project: 'DfoToa.Domain.UnitTest/DfoToa.Domain.UnitTest.csproj'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Remove existing entry from NuGet config
+        run: dotnet nuget remove source ${{ env.nuget_feed_name }} --configfile ${{ env.nuget_config }}
+      - name: Auth NuGet
+        run: dotnet nuget add source ${{ env.nuget_feed_source }} --configfile ${{ env.nuget_config }} --name ${{ env.nuget_feed_name }} --username az --password ${{ secrets.AZURE_DEVOPS_TOKEN }} --store-password-in-clear-text
+      - name: Restore NuGet Packages
+        run: dotnet restore
+      - name: Build for linux
+        run: dotnet publish --configuration Release --no-restore --framework net6.0 --runtime linux-x64 -p:PublishSingleFile=true,PublishTrimmed=true,UseAppHost=true --self-contained --output output/linux-x64
+      - name: Build for windows
+        run: dotnet publish --configuration Release --no-restore --framework net6.0 --runtime win-x64 -p:PublishSingleFile=true,PublishTrimmed=true,UseAppHost=true --self-contained --output output/win-x64
+      - name: Test
+        run: dotnet test ${{ env.test_project }} --no-restore --verbosity normal
+      - uses: actions/checkout@v3
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "output/win-x64/*,output/linux-x64/*"
