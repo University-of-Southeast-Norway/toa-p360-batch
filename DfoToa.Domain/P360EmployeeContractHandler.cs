@@ -22,7 +22,7 @@ namespace DfoToa.Domain
         {
             DocumentService.Files2 contractFile = new DocumentService.Files2
             {
-                Title = $"Signert avtale {contract.ContractId}",
+                Title = $"Signert avtale {contract.SequenceNumber}",
                 Format = "pdf",
                 Note = Utility.CreateChecksum(contract.FileContent),
                 Base64Data = contract.FileContent

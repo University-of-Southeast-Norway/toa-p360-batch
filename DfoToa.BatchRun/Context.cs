@@ -100,6 +100,7 @@ namespace DfoToa.BatchRun
         private class TokenResolverClass : ITokenResolver
         {
             private readonly Domain.IContext _context;
+            private static SemaphoreSlim _theLock = new SemaphoreSlim(1, 1);
 
             public TokenResolverClass(Domain.IContext context)
             {
@@ -110,27 +111,36 @@ namespace DfoToa.BatchRun
 
             public async Task<string> GetTokenAsync(string scope)
             {
-                if (_maskinportenTokens.ContainsKey(scope) && _maskinportenTokens[scope].IsExpiring() == false)
+                await _theLock.WaitAsync();
+                try
                 {
-                    return _maskinportenTokens[scope].Token;
+                    if (_maskinportenTokens.ContainsKey(scope) && _maskinportenTokens[scope].IsExpiring() == false)
+                    {
+                        return _maskinportenTokens[scope].Token;
+                    }
+
+                    var certificate = new X509Certificate2(
+                        _context.MaskinportenCertificatePath,
+                        _context.MaskinportenCertificatePassword
+                    );
+
+                    var configuration = new MaskinportenClientConfiguration(
+                        audience: _context.MaskinportenAudience,
+                        tokenEndpoint: _context.MaskinportenTokenEndpoint,
+                        issuer: _context.MaskinportenIssuer,
+                        numberOfSecondsLeftBeforeExpire: 10,
+                        certificate: certificate);
+                    var maskinportenClient = new MaskinportenClient(configuration);
+
+                    MaskinportenToken tokenResult = await maskinportenClient.GetAccessToken(scope);
+                    if (_maskinportenTokens.ContainsKey(scope)) _maskinportenTokens[scope] = tokenResult;
+                    else _maskinportenTokens.Add(scope, tokenResult);
+                    return tokenResult.Token;
                 }
-
-                var certificate = new X509Certificate2(
-                    _context.MaskinportenCertificatePath,
-                    _context.MaskinportenCertificatePassword
-                );
-
-                var configuration = new MaskinportenClientConfiguration(
-                    audience: _context.MaskinportenAudience,
-                    tokenEndpoint: _context.MaskinportenTokenEndpoint,
-                    issuer: _context.MaskinportenIssuer,
-                    numberOfSecondsLeftBeforeExpire: 10,
-                    certificate: certificate);
-                var maskinportenClient = new MaskinportenClient(configuration);
-
-                MaskinportenToken tokenResult = await maskinportenClient.GetAccessToken(scope);
-                _maskinportenTokens.Add(scope, tokenResult);
-                return tokenResult.Token;
+                finally
+                {
+                    _theLock.Release();
+                }
             }
         }
 
