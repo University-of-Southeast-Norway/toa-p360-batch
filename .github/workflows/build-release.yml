@@ -21,8 +21,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+      
+      - name: copy _general.example.json to _general.json
+        uses: canastro/copy-file-action@master
+        with:
+          source: "DfoToa.BatchRun/JSON/_general.example.json"
+          target: "DfoToa.BatchRun/JSON/_general.json"
 
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
@@ -33,13 +39,13 @@ jobs:
       - name: Restore NuGet Packages
         run: dotnet restore
       - name: Build for linux
-        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net6.0 --runtime linux-x64 -p:PublishSingleFile=true,PublishTrimmed=true,UseAppHost=true --self-contained --output output/linux-x64
+        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net6.0 --runtime linux-x64 -p:PublishProfile=linux
       - name: Build for windows
-        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net6.0 --runtime win-x64 -p:PublishSingleFile=true,PublishTrimmed=true,UseAppHost=true --self-contained --output output/win-x64
+        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net6.0 --runtime win-x64 -p:PublishProfile=windows
       - name: Test
         run: dotnet test ${{ env.test_project }} --no-restore --verbosity normal
 
       - uses: ncipollo/release-action@v1
         name: Create release
         with:
-          artifacts: "output/win-x64/*.*,output/linux-x64/*.*"
+          artifacts: "DfoToa.BatchRun/publish/*,**/_general.example.json"
