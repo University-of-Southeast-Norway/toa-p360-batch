@@ -22,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
@@ -37,7 +38,8 @@ jobs:
         run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net6.0 --runtime win-x64 -p:PublishSingleFile=true,PublishTrimmed=true,UseAppHost=true --self-contained --output output/win-x64
       - name: Test
         run: dotnet test ${{ env.test_project }} --no-restore --verbosity normal
-      - uses: actions/checkout@v3
+
       - uses: ncipollo/release-action@v1
+        name: Create release
         with:
-          artifacts: "waspc/output/win-x64/*.*,waspc/output/linux-x64/*.*"
+          artifacts: "output/win-x64/*.*,output/linux-x64/*.*"
