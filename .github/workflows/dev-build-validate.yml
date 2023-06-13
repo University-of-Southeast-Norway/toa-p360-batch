@@ -22,8 +22,8 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-      #- name: Remove existing entry from NuGet config
-      #  run: dotnet nuget remove source ${{ env.nuget_feed_name }} --configfile ${{ env.nuget_config }}
+      - name: Remove existing entry from NuGet config
+        run: dotnet nuget remove source ${{ env.nuget_feed_name }} --configfile ${{ env.nuget_config }}
       - name: Auth NuGet
         run: dotnet nuget add source ${{ env.nuget_feed_source }} --configfile ${{ env.nuget_config }} --name ${{ env.nuget_feed_name }} --username az --password ${{ secrets.AZURE_DEVOPS_TOKEN }} --store-password-in-clear-text
       - name: Restore NuGet Packages
