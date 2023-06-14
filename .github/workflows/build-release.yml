@@ -64,4 +64,4 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "release-linux64.tar.gz,release-win64.zip"
+          artifacts: "${{ github.workspace }}/DfoToa.BatchRun/publish/release-linux64.tar.gz,${{ github.workspace }}/DfoToa.BatchRun/publish/release-win64.zip"
