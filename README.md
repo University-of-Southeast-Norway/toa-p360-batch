@@ -71,6 +71,9 @@ Følgende felter må settes:
 - ResponseCode
 
 # Teknisk oppsett
+## Forberedelser
+- Dersom du må sette opp integrason med autentisering via maskinporten må du ha fått delegert rettigheter via altinn først: https://docs.digdir.no/docs/Maskinporten/maskinporten_sjolvbetjening_web#tilgang-i-produksjonsmiljø
+
 ## Eksekvering av kjøring
 Løsningen kan kjøres på både Windows og Linux. Selve programmet kan eksekveres fra kommandolinje med eller uten inndata parametere. Dersom det ikke oppgis parametere blir man bedt om å oppgi fra og til-dato. Fra og til-dato kan også oppgis som parametere. Dersom man oppgir en dato, anses denne datoen for å være fra-dato, og til-dato settes til dagens dato. Dersom man oppgir to datoer anses disse å være fra og til-dato. Dato-format som skal benyttes er YYYYMMDD.
 ### Alternativer for parametere:
