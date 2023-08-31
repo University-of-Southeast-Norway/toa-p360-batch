@@ -136,7 +136,7 @@ namespace DfoToa.Domain
                     audience: Context.MaskinportenAudience,
                     tokenEndpoint: Context.MaskinportenTokenEndpoint,
                     issuer: Context.MaskinportenIssuer,
-                    numberOfSecondsLeftBeforeExpire: 10,
+                    numberOfSecondsLeftBeforeExpire: 119,
                     certificate: certificate);
 
                 var maskinportenClient = new MaskinportenClient(configuration);
