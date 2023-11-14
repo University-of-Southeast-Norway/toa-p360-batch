@@ -98,6 +98,11 @@ Samme som over men vil ikke spørre om bekreftelse fra bruker (til bruk ved for 
 DfoToa.BatchRun.exe -f 20220701 -t 20220901 -s
 ```
 
+Eksempel på crontab kommando i Linux:
+``` sh
+0 6 * * * cd /root/toaintegrasjon && echo |/root/toaintegrasjon/DfoToa.BatchRun -s -f "$(date --date="-2 day" +\%Y\%m\%d)" -t "$(date +\%Y\%m\%d)"
+```
+
 ## Oppsett av miljøkonfigurasjon
 Konfigurasjon av miljø settes opp i filen _JSON/\_general.config_. Det medfølger en _JSON/\_general.template.config_ mal-fil som man endrer navnet på til _\_general.config_.
 
