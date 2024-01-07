@@ -15,14 +15,12 @@ public class DStepFileHandler : IHandleStateFiles
         _stateFolder = stateFolder;
     }
 
-    private string CreateFileName(Contract contract)
+    private static string CreateFileName(Contract contract)
     {
-        using (var md5 = MD5.Create())
-        {
-            var buffer = Encoding.Default.GetBytes(contract.FileContent);
-            string fileHash = BitConverter.ToString(md5.ComputeHash(buffer)).Replace("-", "");
-            return $"{contract.SequenceNumber}-{fileHash}.{FileEnding}";
-        }
+        using var md5 = MD5.Create();
+        var buffer = Encoding.Default.GetBytes(contract.FileContent);
+        string fileHash = BitConverter.ToString(md5.ComputeHash(buffer)).Replace("-", "");
+        return $"{contract.SequenceNumber}-{fileHash}.{FileEnding}";
     }
 
     private string CreatePath(Contract contract)
@@ -32,14 +30,10 @@ public class DStepFileHandler : IHandleStateFiles
         return path;
     }
 
-    public async Task<string> GetState(Contract contract)
+    public async Task<string?> GetState(Contract contract)
     {
         string path = CreatePath(contract);
-        if (File.Exists(path))
-        {
-            return await Task.FromResult(File.ReadAllText(path));
-        }
-        return null;
+        return File.Exists(path) ? await Task.FromResult(File.ReadAllText(path)) : null;
     }
 
     public async Task SaveState(Contract contract, string state)

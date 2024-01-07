@@ -6,9 +6,8 @@ namespace DfoToa.Domain;
 
 public class ArchiveHandler
 {
-    private bool _initiated;
-    private MaskinportenToken _token;
-    private Client _dfoClient;
+    private MaskinportenToken? _token;
+    private Client? _dfoClient;
 
     public IContext Context { get; }
 
@@ -19,7 +18,7 @@ public class ArchiveHandler
 
     public async Task Archive(IEmployeeContractHandler employeeContractHandler, DateTimeOffset from, DateTimeOffset to)
     {
-        await init();
+        await GetOrCreateDfoClient();
 
         List<string> contractSequenceList = await GetContractsFromDfo(from, to);
 
@@ -68,19 +67,19 @@ public class ArchiveHandler
 
     public async Task Archive(IEmployeeContractHandler employeeContractHandler, string contractSequenceNumber)
     {
-        await init();
-        if (!Context.UseApiKey && _token.IsExpiring()) await Reset();
-        Contract contract = await _dfoClient.GetContractAsync(contractSequenceNumber);
+        Client client = await GetOrCreateDfoClient();
+        if (!Context.UseApiKey && _token!.IsExpiring()) await Reset();
+        Contract contract = await client.GetContractAsync(contractSequenceNumber);
         string message = $"Jobber med {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}";
         Console.WriteLine(message);
         Context.CurrentLogger.WriteToLog(message);
 
         try
         {
-            EmployeeContract employeeContract = await _dfoClient.GetEmployeeContractAsync(contract.EmployeeId, contract.ContractId);
+            EmployeeContract employeeContract = await client.GetEmployeeContractAsync(contract.EmployeeId, contract.ContractId);
             Console.WriteLine($"Fant avtale {employeeContract}");
             Context.CurrentLogger.WriteToLog($"Fant avtale {employeeContract}");
-            Employee employee = await _dfoClient.GetEmployeeAsync(employeeContract.Id, Context.SearchDate);
+            Employee employee = await client.GetEmployeeAsync(employeeContract.Id, Context.SearchDate);
             Console.WriteLine($"Fant ansatt {employee}");
             Context.CurrentLogger.WriteToLog($"Fant ansatt {employee}");
 
@@ -95,19 +94,19 @@ public class ArchiveHandler
 
     public async Task<List<string>> GetContractsFromDfo(DateTimeOffset from, DateTimeOffset to)
     {
-        await init();
-        return await _dfoClient.GetContractSequenceListAsync(from, to);
+        Client client = await GetOrCreateDfoClient();
+        return await client.GetContractSequenceListAsync(from, to);
     }
 
     private async Task Reset()
     {
         _dfoClient = null;
-        await init();
+        _dfoClient = await GetOrCreateDfoClient();
     }
 
-    private async Task init()
+    private async Task<Client> GetOrCreateDfoClient()
     {
-        if (_dfoClient != null) return;
+        if (_dfoClient != null) return _dfoClient;
 
         Context.CurrentLogger.WriteToLog("Initierer...");
 
@@ -134,7 +133,8 @@ public class ArchiveHandler
             Context.CurrentLogger.WriteToLog("Henter token fra Maskinporten...");
             _token = await maskinportenClient.GetAccessToken(Context.MaskinportenScope);
             Context.CurrentLogger.WriteToLog($"Token mottatt... ({_token.Token.Substring(0, 10)}...)");
-            _dfoClient = new JwtAuthorizationClient(Context.DfoApiBaseAddress, Context.TokenResolver); 
+            _dfoClient = new JwtAuthorizationClient(Context.DfoApiBaseAddress, Context.TokenResolver);
         }
+        return _dfoClient;
     }
 }

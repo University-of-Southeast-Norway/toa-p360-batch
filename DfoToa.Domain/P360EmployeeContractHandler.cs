@@ -14,7 +14,7 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
 
     public async Task RunAsync(Employee employee, Contract contract)
     {
-        DocumentService.Files2 contractFile = new DocumentService.Files2
+        DocumentService.Files2 contractFile = new()
         {
             Title = $"Signert avtale {contract.SequenceNumber}",
             Format = "pdf",
@@ -23,10 +23,10 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
         };
         P360BusinessLogic.Init(Context);
         string existingState = await Context.StateFileHandler.GetState(contract);
-        RunResult runResult = null;
+        RunResult? runResult = null;
 
         if (!string.IsNullOrEmpty(existingState)) runResult = P360BusinessLogic.GetRunResultFromJson(existingState);
-        else runResult = new RunResult();
+        else runResult = new();
 
         if (runResult.Steps.Any() && runResult.Steps.All(s => s.Success)) return;
 
@@ -44,7 +44,7 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
         }
         finally
         {
-            var json = P360BusinessLogic.GetJsonFromRunResult(runResult);
+            string json = P360BusinessLogic.GetJsonFromRunResult(runResult);
             await Context.StateFileHandler.SaveState(contract, json);
         }
     }
