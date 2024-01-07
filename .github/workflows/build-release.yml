@@ -7,7 +7,7 @@ on:
 
 env:
   nuget_feed_name: 'SDO'
-  nuget_feed_source: 'https://pkgs.dev.azure.com/USN-SDO/_packaging/SDO/nuget/v3/index.json'
+  nuget_feed_source: 'https://pkgs.dev.azure.com/USN-DUIT/_packaging/SDO/nuget/v3/index.json'
   nuget_config: 'nuget.config'
   test_project: 'DfoToa.Domain.UnitTest/DfoToa.Domain.UnitTest.csproj'
 
