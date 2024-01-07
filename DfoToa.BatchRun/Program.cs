@@ -3,15 +3,15 @@ using DfoToa.BatchRun;
 using System.Globalization;
 
 
-String? dateFrom = null;
-String? dateTo = null;
+string? dateFrom = null;
+string? dateTo = null;
 
 var argumentUtility = new ArgumentUtility(Environment.GetCommandLineArgs());
 var consoleHelper = new ConsoleHelper(argumentUtility.Silent);
 #if DEBUG
-dateFrom = "20220910";
-dateTo = "20220911";
-Boolean proceed = true;
+dateFrom = "20230601";
+dateTo = "20230602";
+bool proceed = true;
 #else
 if (argumentUtility.HelpNeeded()) return;
 
@@ -39,30 +39,28 @@ else proceed = consoleHelper.Proceed($"Er du sikker på at du vil arkivere avtal
 if (proceed)
 {
 
-    using (var context = DefaultContext.Current)
+    using var context = DefaultContext.Current;
+    try
     {
-        try
+        var handler = new ArchiveHandler(context);
+        if (string.IsNullOrEmpty(argumentUtility.SequenceNumber))
         {
-            var handler = new ArchiveHandler(context);
-            if (string.IsNullOrEmpty(argumentUtility.SequenceNumber))
-            {
-                Console.WriteLine("Henter avtaler " + dateFrom + " til " + dateTo + "...");
-                context.CurrentLogger.WriteToLog($"Henter avtaler {dateFrom} til {dateTo}...");
-                var contracts = await handler.GetContractsFromDfo(DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
-                    DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
-                if (!consoleHelper.Proceed($"Fant {contracts.Count()} avtaler. Ønsker du å arkivere disse? (Ja/Nei) ")) return;
-                await handler.Archive(new P360EmployeeContractHandler(context), contracts);
-            }
-            else
-            {
-                await handler.Archive(new P360EmployeeContractHandler(context), argumentUtility.SequenceNumber);
-            }
+            Console.WriteLine($"Henter avtaler {dateFrom} til {dateTo}...");
+            context.CurrentLogger.WriteToLog($"Henter avtaler {dateFrom} til {dateTo}...");
+            var contracts = await handler.GetContractsFromDfo(DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
+                DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
+            if (!consoleHelper.Proceed($"Fant {contracts.Count} avtaler. Ønsker du å arkivere disse? (Ja/Nei) ")) return;
+            await handler.Archive(new P360EmployeeContractHandler(context), contracts);
         }
-        catch (Exception ex)
+        else
         {
-            Console.WriteLine(ex.ToString());
-            Log.LogToFile(ex.ToString());
+            await handler.Archive(new P360EmployeeContractHandler(context), argumentUtility.SequenceNumber);
         }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.ToString());
+        Log.LogToFile(ex.ToString());
     }
 }
 

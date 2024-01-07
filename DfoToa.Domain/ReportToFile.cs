@@ -1,34 +1,27 @@
-﻿#if NET48
-using System.Threading.Tasks;
-using System.IO;
-using System;
-#endif
+﻿using System.Text;
 
-using System.Text;
+namespace DfoToa.Domain;
 
-namespace DfoToa.Domain
+public class ReportToFile : IReport, IDisposable
 {
-    public class ReportToFile : IReport, IDisposable
+    private readonly string _reportFile;
+    private readonly FileStream _stream;
+
+    public ReportToFile(string reportFile)
     {
-        private readonly string _reportFile;
-        private readonly FileStream _stream;
+        _reportFile = reportFile;
+        _stream = File.OpenWrite(_reportFile);
+    }
 
-        public ReportToFile(string reportFile)
-        {
-            _reportFile = reportFile;
-            _stream = File.OpenWrite(_reportFile);
-        }
+    public async Task Report(string content)
+    {
+        byte[] contentBytes = Encoding.Default.GetBytes($"{content}{Environment.NewLine}");
+        await _stream.WriteAsync(contentBytes, 0, contentBytes.Length);
+        await _stream.FlushAsync();
+    }
 
-        public async Task Report(string content)
-        {
-            byte[] contentBytes = Encoding.Default.GetBytes($"{content}{Environment.NewLine}");
-            await _stream.WriteAsync(contentBytes, 0, contentBytes.Length);
-            await _stream.FlushAsync();
-        }
-
-        public void Dispose()
-        {
-            _stream.Dispose();
-        }
+    public void Dispose()
+    {
+        _stream.Dispose();
     }
 }

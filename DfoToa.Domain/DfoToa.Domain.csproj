@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net6.0;net48</TargetFrameworks>
+	  <TargetFramework>net6.0</TargetFramework>
 	  <ImplicitUsings Condition=" '$(TargetFramework)' == 'net6.0' ">enable</ImplicitUsings>
 	  <Nullable Condition=" '$(TargetFramework)' == 'net6.0' ">enable</Nullable>
 	  <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
