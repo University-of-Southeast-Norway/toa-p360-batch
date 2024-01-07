@@ -4,7 +4,7 @@
   "reportFolder": "c:/temp/",
   "stateFolder": "state",
   "p360ApiKey": "",
-  "p360BaseAddress": "",
+  "p360BaseAddress": "https://<institusjon>.public360online.com", // TEST: https://<institusjon>.public360online.com
   "dfo": {
     "api_base": "https://api.dfo.no/" // TEST: https://api-test.dfo.no/
   },

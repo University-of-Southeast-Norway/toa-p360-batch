@@ -22,7 +22,7 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
             Base64Data = contract.FileContent
         };
         P360BusinessLogic.Init(Context);
-        string existingState = await Context.StateFileHandler.GetState(contract);
+        string? existingState = await Context.StateFileHandler.GetState(contract);
         RunResult? runResult = null;
 
         if (!string.IsNullOrEmpty(existingState)) runResult = P360BusinessLogic.GetRunResultFromJson(existingState);
