@@ -4,11 +4,11 @@
   "reportFolder": "c:/temp/",
   "stateFolder": "state",
   "p360ApiKey": "",
-  "p360BaseAddress": "https://<institusjon>.public360online.com", // TEST: https://<institusjon>.public360online.com
+  "p360BaseAddress": "https://<institution>.public360online.com", // TEST: https://<institution>.public360online.com
   "dfo": {
     "api_base": "https://api.dfo.no/" // TEST: https://api-test.dfo.no/
   },
-  "maskinporten": {
+  "maskinporten": { // This part is not required if 'api_keys' is set
     "certificate": {
       "path": "", // Get certificate from organization
       "password": "" // Get password from organization
