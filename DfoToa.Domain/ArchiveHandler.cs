@@ -16,42 +16,6 @@ public class ArchiveHandler
         Context = context;
     }
 
-    public async Task Archive(IEmployeeContractHandler employeeContractHandler, DateTimeOffset from, DateTimeOffset to)
-    {
-        await GetOrCreateDfoClient();
-
-        List<string> contractSequenceList = await GetContractsFromDfo(from, to);
-
-        Console.WriteLine($"Prosesserer {contractSequenceList.Count} kontrakter...");
-        Context.CurrentLogger.WriteToLog($"Prosesserer {contractSequenceList.Count} kontrakter...");
-
-        foreach (string contractSequenceNumber in contractSequenceList)
-        {
-            if (!Context.UseApiKey && _token.IsExpiring()) await Reset();
-            Contract contract = await _dfoClient.GetContractAsync(contractSequenceNumber);
-            string message = $"Arbdeider med {contract.SequenceNumber};{contract.ContractId};{contract.EmployeeId}";
-            Console.WriteLine(message);
-            Context.CurrentLogger.WriteToLog(message);
-
-            try
-            {
-                EmployeeContract employeeContract = await _dfoClient.GetEmployeeContractAsync(contract.EmployeeId, contract.ContractId);
-                Console.WriteLine($"Fant {employeeContract}");
-                Context.CurrentLogger.WriteToLog($"Fant {employeeContract}");
-                Employee employee = await _dfoClient.GetEmployeeAsync(employeeContract.Id, Context.SearchDate);
-                Console.WriteLine($"Fant {employee}");
-                Context.CurrentLogger.WriteToLog($"Fant {employee}");
-
-                await employeeContractHandler.RunAsync(employee, contract);
-            }
-            catch (Exception ex)
-            {
-                Context.CurrentLogger.WriteToLog(ex);
-                Console.WriteLine($"Uhåndtert feil har oppstått:{Environment.NewLine}{ex}");
-            }
-        }
-    }
-
     public async Task Archive(IEmployeeContractHandler employeeContractHandler, List<string> contractSequenceList)
     {
         Console.WriteLine($"Prosesserer {contractSequenceList.Count} avtaler...");
