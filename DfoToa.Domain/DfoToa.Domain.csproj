@@ -20,6 +20,7 @@
     <PackageReference Include="KS.Fiks.Maskinporten.Client" Version="1.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="P360Client" Version="8.8.1" />
+    <PackageReference Include="P360Client.Domain" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
