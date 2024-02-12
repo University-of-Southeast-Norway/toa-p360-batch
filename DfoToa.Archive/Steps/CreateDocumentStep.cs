@@ -18,7 +18,7 @@ public class CreateDocumentStep : Step, IHaveUpdateDocumentWithFileReferenceStep
     }
     internal CreateDocumentStep(DateTimeOffset? documentDate) : base(nameof(CreateDocumentStep))
     {
-        this.documentDate = documentDate;
+        DocumentDate = documentDate;
     }
     internal CreateDocumentStep() : base(nameof(CreateDocumentStep))
     {
@@ -27,13 +27,13 @@ public class CreateDocumentStep : Step, IHaveUpdateDocumentWithFileReferenceStep
     public string DocumentNumber { get; set; }
     public string CaseNumber { get; set; }
     public int? Recno { get; set; }
-    public DateTimeOffset? documentDate { get; private set; }
+    public DateTimeOffset? DocumentDate { get; set; }
 
     protected override async Task ExecuteStep(Client client)
     {
         var createDocumentArgs = JsonDeserializerObsolete.GetCreateDocumentArgs();
         createDocumentArgs.Parameter.CaseNumber = CaseNumber;
-        createDocumentArgs.Parameter.DocumentDate = documentDate ?? DateTimeOffset.Now.Date;
+        createDocumentArgs.Parameter.DocumentDate = DocumentDate ?? DateTimeOffset.Now.Date;
         DocumentService.Contacts submitter = createDocumentArgs.Parameter.Contacts.FirstOrDefault(f => f.Role == "Avsender");
         if (submitter != null && Recno.HasValue) submitter.ReferenceNumber = "recno:" + Recno;
         DocumentNumber = await client.CreateDocumentAsync(createDocumentArgs);
