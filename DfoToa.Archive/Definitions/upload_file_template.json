@@ -1,0 +1,10 @@
+{
+  "parameter": {
+    "User": "string",
+    "FileData": [
+      {}
+    ],
+    "FileName": "string",
+    "FileFormat": "string"
+  }
+}

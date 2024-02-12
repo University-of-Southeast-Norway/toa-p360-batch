@@ -1,0 +1,52 @@
+{
+  "parameter": {
+    "ADContextUser": "string",
+    "Recno": 0,
+    "Name": "string",
+    "ExternalID": "string",
+    "PersonalIdNumber": "string",
+    "CreatedDateRange": {
+      "From": "2021-12-13T13:51:44.212Z",
+      "To": "2021-12-13T13:51:44.212Z"
+    },
+    "ModifiedDateRange": {
+      "From": "2021-12-13T13:51:44.212Z",
+      "To": "2021-12-13T13:51:44.212Z"
+    },
+    "Page": 0,
+    "MaxRows": 0,
+    "SortCriterion": "RecnoDescending",
+    "Active": true,
+    "Categories": [
+      "string"
+    ],
+    "CustomNo1": "string",
+    "CustomNo2": "string",
+    "CustomNo3": "string",
+    "AdditionalFields": [
+      {
+        "Name": "string",
+        "Value": "string",
+        "OperatorType": {
+          "Value": "string"
+        }
+      }
+    ],
+    "IncludeCustomFields": true,
+    "DateCriteria": [
+      {
+        "DateName": "string",
+        "Operator": "string",
+        "DateValue": "2021-12-13T13:51:44.212Z"
+      }
+    ],
+    "Email": "string",
+    "AlternativeEmail": "string",
+    "AdditionalListFields": [
+      {
+        "Name": "string",
+        "Value": {}
+      }
+    ]
+  }
+}

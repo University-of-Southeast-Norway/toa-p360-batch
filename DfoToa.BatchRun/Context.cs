@@ -3,12 +3,7 @@ using DfoToa.Domain;
 using Ks.Fiks.Maskinporten.Client;
 using Newtonsoft.Json.Linq;
 using P360Client;
-using P360Client.Domain;
-using System;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
 namespace DfoToa.BatchRun

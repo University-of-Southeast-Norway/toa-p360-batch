@@ -2,7 +2,7 @@
 
 namespace DfoToa.Domain;
 
-public interface IContext : P360Client.Domain.IContext
+public interface IContext : Archive.IContext
 {
     string DfoApiBaseAddress { get; }
     string MaskinportenCertificatePath { get; }

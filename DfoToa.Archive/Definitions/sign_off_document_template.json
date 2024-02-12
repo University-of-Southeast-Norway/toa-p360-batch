@@ -1,0 +1,10 @@
+{
+  "parameter": {
+    "ADContextUser": "string",
+    "Document": "string",
+    "ResponseCode": "string",
+    "NoteTitle": "string",
+    "Note": "string",
+    "ReplyDocument": "string"
+  }
+}

@@ -6,10 +6,11 @@
       <RuntimeIdentifiers>win-x86;win-x64;linux-x64</RuntimeIdentifiers>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-      <VersionPrefix>2.1.0</VersionPrefix>
+      <VersionPrefix>4.3.0</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DfoToa.Archive\DfoToa.Archive.csproj" />
     <ProjectReference Include="..\DfoToa.Domain\DfoToa.Domain.csproj" />
   </ItemGroup>
 

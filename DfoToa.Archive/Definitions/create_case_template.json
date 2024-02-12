@@ -1,0 +1,116 @@
+{
+  "parameter": {
+    "ClosedDate": "2021-12-09T16:19:35.941Z",
+    "CaseType": "string",
+    "DefaultValueSet": "string",
+    "ADContextUser": "string",
+    "ExternalId": {
+      "Id": "string",
+      "Type": "string"
+    },
+    "Title": "string",
+    "UnofficialTitle": "string",
+    "Status": "string",
+    "StartDate": "2021-12-09T16:19:35.941Z",
+    "JournalUnit": "string",
+    "SubArchive": "string",
+    "ArchiveCodes": [
+      {
+        "ArchiveCode": "string",
+        "ArchiveType": "string",
+        "Sort": 0,
+        "IsManualText": true
+      }
+    ],
+    "FiledOnPaper": true,
+    "Keywords": [
+      "string"
+    ],
+    "AccessCode": "string",
+    "Paragraph": "string",
+    "AccessGroup": "string",
+    "Notes": "string",
+    "ResponsibleEnterpriseRecno": 0,
+    "ResponsibleEnterpriseNumber": "string",
+    "ResponsiblePersonRecno": 0,
+    "ResponsiblePersonIdNumber": "string",
+    "ResponsiblePersonEmail": "string",
+    "ResponsiblePersonUserId": "string",
+    "Remarks": [
+      {
+        "Title": "string",
+        "Content": "string",
+        "RemarkType": "string"
+      }
+    ],
+    "Contacts": [
+      {
+        "Role": "string",
+        "ExternalId": "string",
+        "ReferenceNumber": "string, it is possible to submit 'recno:[recno]'",
+        "IsUnofficial": true,
+        "ContactId": "string"
+      }
+    ],
+    "UnregisteredContacts": [
+      {
+        "Role": "string",
+        "IsUnofficial": true,
+        "ContactName": "string",
+        "ContactCompanyName": "string",
+        "ReferenceNumber": "string",
+        "Address": "string",
+        "Country": "string",
+        "MobilePhone": "string",
+        "Phone": "string",
+        "Email": "string",
+        "State": "string",
+        "ZipCode": "string",
+        "ZipPlace": "string"
+      }
+    ],
+    "Project": "string, it is possible to submit 'recno:[recno]'",
+    "ScrapCode": "string",
+    "ReferringCases": [
+      "string"
+    ],
+    "Category": "string",
+    "Estates": [
+      {
+        "Recno": 0,
+        "ExternalId": "string"
+      }
+    ],
+    "AdditionalFields": [
+      {
+        "Name": "string",
+        "Value": "string",
+        "OperatorType": {
+          "Value": "string"
+        }
+      }
+    ],
+    "ProgressPlanId": "string",
+    "Permissions": [
+      {
+        "AccessGroup": "string",
+        "ContactExternalId": "string",
+        "AccessLevel": "Read",
+        "Grant": true,
+        "ViewFile": true,
+        "InsertFile": true,
+        "ModifyFile": true,
+        "InsertRev": true,
+        "ModifyRev": true,
+        "InsertDoc": true,
+        "Reference": "string"
+      }
+    ],
+    "AdditionalListFields": [
+      {
+        "Name": "string",
+        "Value": {}
+      }
+    ]
+  }
+}

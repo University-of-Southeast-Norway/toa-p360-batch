@@ -1,0 +1,9 @@
+{
+  "parameter": {
+    "ADContextUser": "swi\\360integration",
+    "Title": "Arbeidsavtale / oppdragsavtale",
+    "ArchiveCode": 212.2,
+    "ContactRecnos": null,
+    "SubArchive": "Sakarkiv"
+  }
+}

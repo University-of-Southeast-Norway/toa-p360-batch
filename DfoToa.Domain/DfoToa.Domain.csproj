@@ -15,12 +15,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DfoClient" Version="7.1.1" />
+    <PackageReference Include="DfoClient" Version="8.1.0" />
     <PackageReference Include="InformationManager.Api.Client" Version="1.0.1" />
     <PackageReference Include="KS.Fiks.Maskinporten.Client" Version="1.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="P360Client" Version="8.8.1" />
-    <PackageReference Include="P360Client.Domain" Version="6.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DfoToa.Archive\DfoToa.Archive.csproj" />
   </ItemGroup>
 
 </Project>

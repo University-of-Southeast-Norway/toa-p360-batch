@@ -1,0 +1,160 @@
+{
+  "parameter": {
+    "CaseNumber": "string",
+    "CaseExternalId": {
+      "Id": "string",
+      "Type": "string"
+    },
+    "Archive": "string",
+    "DefaultValueSet": "string",
+    "ADContextUser": "string",
+    "Title": "string",
+    "UnofficialTitle": "string",
+    "DocumentDate": "2021-12-10T10:40:30.309Z",
+    "Category": "string",
+    "Status": "string",
+    "AccessCode": "string",
+    "AccessGroup": "string",
+    "ResponsiblePersonRecno": 0,
+    "ResponsiblePersonIdNumber": "string",
+    "ResponsiblePersonEmail": "string",
+    "ResponsiblePersonUserId": "string",
+    "ResponsibleEnterpriseRecno": 0,
+    "ResponsibleEnterpriseNumber": "string",
+    "Contacts": [
+      {
+        "Role": "string",
+        "ReferenceNumber": "string",
+        "ExternalId": "string",
+        "IsUnofficial": true,
+        "DispatchChannel": "string"
+      }
+    ],
+    "UnregisteredContacts": [
+      {
+        "Role": "string",
+        "IsUnofficial": true,
+        "ContactName": "string",
+        "ContactCompanyName": "string",
+        "ReferenceNumber": "string",
+        "Address": "string",
+        "Country": "string",
+        "MobilePhone": "string",
+        "Phone": "string",
+        "Fax": "string",
+        "Email": "string",
+        "State": "string",
+        "ZipCode": "string",
+        "ZipPlace": "string",
+        "DispatchChannel": "string"
+      }
+    ],
+    "SendersReference": "string",
+    "Paragraph": "string",
+    "JournalDate": "2021-12-10T10:40:30.309Z",
+    "DispatchedDate": "2021-12-10T10:40:30.309Z",
+    "FiledOnPaper": true,
+    "Notes": "string",
+    "ReferringCases": [
+      {
+        "CaseNumber": "string"
+      }
+    ],
+    "ReferringDocuments": [
+      {
+        "DocumentNumber": "string"
+      }
+    ],
+    "Keywords": [
+      "string"
+    ],
+    "FilesFromTemplate": [
+      {
+        "Title": "string",
+        "TemplateId": "string"
+      }
+    ],
+    "Files": [
+      {
+        "Title": "string",
+        "Format": "string",
+        "Base64Data": "string",
+        "Data": [
+          {}
+        ],
+        "RelationType": "string",
+        "VersionFormat": "string",
+        "Note": "string",
+        "Category": "string",
+        "Status": "string",
+        "AccessCode": "string",
+        "DegradeCode": "string",
+        "DegradeDate": "2021-12-10T10:40:30.309Z",
+        "FiledOnPaper": true,
+        "PaperLocation": "string",
+        "UploadedFileReference": "string",
+        "AdditionalFields": {}
+      }
+    ],
+    "Remarks": [
+      {
+        "Title": "string",
+        "Content": "string",
+        "RemarkType": "string"
+      }
+    ],
+    "Project": "string",
+    "AdditionalFields": [
+      {
+        "Name": "string",
+        "Value": "string",
+        "OperatorType": {
+          "Value": "string"
+        }
+      }
+    ],
+    "Estates": [
+      {
+        "Recno": 0,
+        "ExternalId": "string",
+        "Role": "string"
+      }
+    ],
+    "RevisionStatus": "string",
+    "SubArchive": "string",
+    "ArchiveCodes": [
+      {
+        "ArchiveCode": "string",
+        "ArchiveType": "string",
+        "Sort": 0,
+        "IsManualText": true
+      }
+    ],
+    "RecordType": "string",
+    "Permissions": [
+      {
+        "AccessGroup": "string",
+        "ContactExternalId": "string",
+        "AccessLevel": "Read",
+        "Grant": true,
+        "ViewFile": true,
+        "InsertFile": true,
+        "ModifyFile": true,
+        "InsertRev": true,
+        "ModifyRev": true,
+        "InsertDoc": true,
+        "Reference": "string"
+      }
+    ],
+    "ExternalId": {
+      "Id": "string",
+      "Type": "string"
+    },
+    "AdditionalListFields": [
+      {
+        "Name": "string",
+        "Value": {}
+      }
+    ]
+  }
+}
