@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfoToa.Domain.IntegrationTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfoToa.Archive", "DfoToa.Archive\DfoToa.Archive.csproj", "{B2616BD4-C27A-46CA-BA83-F7D54E458802}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfoToa.Archive.IntegrationTest", "DfoToa.Archive.IntegrationTest\DfoToa.Archive.IntegrationTest.csproj", "{654FFB21-B7E0-499F-B303-C082B07E4635}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfoToa.Archive.UnitTest", "DfoToa.Archive.UnitTest\DfoToa.Archive.UnitTest.csproj", "{15588F23-1654-4A72-8E57-DD58F4504C74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{B2616BD4-C27A-46CA-BA83-F7D54E458802}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2616BD4-C27A-46CA-BA83-F7D54E458802}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2616BD4-C27A-46CA-BA83-F7D54E458802}.Release|Any CPU.Build.0 = Release|Any CPU
+		{654FFB21-B7E0-499F-B303-C082B07E4635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{654FFB21-B7E0-499F-B303-C082B07E4635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{654FFB21-B7E0-499F-B303-C082B07E4635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{654FFB21-B7E0-499F-B303-C082B07E4635}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15588F23-1654-4A72-8E57-DD58F4504C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15588F23-1654-4A72-8E57-DD58F4504C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15588F23-1654-4A72-8E57-DD58F4504C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15588F23-1654-4A72-8E57-DD58F4504C74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
