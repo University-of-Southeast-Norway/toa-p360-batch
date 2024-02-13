@@ -9,7 +9,8 @@
 	<ItemGroup>
 		<PackageReference Include="P360Client" Version="8.10.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="[13.0.1,13.0.3]" />
-		<PackageReference Include="P360Client.Domain" Version="7.0.2" />
+		<PackageReference Include="P360Client.Domain" Version="8.0.0" />
+		<PackageReference Include="P360Client.Domain.Definitions.Json" Version="0.1.0" />
 	</ItemGroup>
 
 </Project>
