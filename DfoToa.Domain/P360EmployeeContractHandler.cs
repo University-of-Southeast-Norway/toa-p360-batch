@@ -1,6 +1,7 @@
 ﻿using DfoClient;
 using DfoToa.Archive;
 using P360Client.Domain;
+using P360Client.DTO;
 
 namespace DfoToa.Domain;
 
@@ -15,7 +16,7 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
 
     public async Task RunAsync(Employee employee, Contract contract)
     {
-        DocumentService.Files2 contractFile = new()
+        NewDocumentFile contractFile = new()
         {
             Title = $"Signert avtale {contract.SequenceNumber}",
             Format = "pdf",

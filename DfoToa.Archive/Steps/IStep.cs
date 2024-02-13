@@ -4,6 +4,6 @@ namespace DfoToa.Archive.Steps;
 
 public interface IStep
 {
-    Task Execute(Client client);
-    Task Execute<TStep>(Client client, TStep fromStep) where TStep : Step;
+    Task Execute(ResourceClient client);
+    Task Execute<TStep>(ResourceClient client, TStep fromStep) where TStep : Step;
 }

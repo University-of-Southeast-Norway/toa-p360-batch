@@ -1,5 +1,6 @@
 ﻿using DfoToa.Archive.Steps;
 using P360Client;
+using P360Client.DTO;
 using System.Text;
 
 namespace DfoToa.Archive;
@@ -12,7 +13,7 @@ public class RunResult
     {
     }
 
-    public async Task Execute(Client client)
+    public async Task Execute(ResourceClient client)
     {
         Step previousStep = null;
         foreach (var step in Steps)
@@ -43,11 +44,11 @@ public class RunResult
         return AddStep(new CreateDocumentStep(caseNumber, recno, documentDate));
     }
 
-    internal UpdateDocumentWithFileReferenceStep AddUpdateDocumentWithFileReferenceStep(DocumentService.Files2 fileInput)
+    internal UpdateDocumentWithFileReferenceStep AddUpdateDocumentWithFileReferenceStep(NewDocumentFile fileInput)
     {
         return AddStep(new UpdateDocumentWithFileReferenceStep(fileInput));
     }
-    internal UpdateDocumentWithFileReferenceStep AddUpdateDocumentWithFileReferenceStep(string documentNumber, DocumentService.Files2 fileInput)
+    internal UpdateDocumentWithFileReferenceStep AddUpdateDocumentWithFileReferenceStep(string documentNumber, NewDocumentFile fileInput)
     {
         return AddStep(new UpdateDocumentWithFileReferenceStep(documentNumber, fileInput));
     }

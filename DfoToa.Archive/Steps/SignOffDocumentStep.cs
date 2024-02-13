@@ -1,6 +1,4 @@
-﻿using P360Client;
-
-namespace DfoToa.Archive.Steps;
+﻿namespace DfoToa.Archive.Steps;
 
 public class SignOffDocumentStep : Step
 {
@@ -20,14 +18,14 @@ public class SignOffDocumentStep : Step
 
     public string DocumentNumber { get; set; }
 
-    protected override Task ExecuteStep(Client client)
+    protected override Task ExecuteStep(ResourceClient client)
     {
         var signOffDocumentStep = JsonDeserializerObsolete.GetSignOffDocumentArgs();
-        signOffDocumentStep.Parameter.Document = DocumentNumber;
-        return client.SignOffDocumentAsync(signOffDocumentStep);
+        signOffDocumentStep.Document = DocumentNumber;
+        return client.DocumentResources.SignOffDocumentAsync(signOffDocumentStep);
     }
 
-    protected override Task ExecuteStep<TStep>(Client client, TStep fromStep)
+    protected override Task ExecuteStep<TStep>(ResourceClient client, TStep fromStep)
     {
         if (fromStep is IHaveSignOffDocumentStepDependencies step)
         {

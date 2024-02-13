@@ -27,4 +27,10 @@
 		<ProjectReference Include="..\DfoToa.Archive\DfoToa.Archive.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Data\ContractFileContent.txt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

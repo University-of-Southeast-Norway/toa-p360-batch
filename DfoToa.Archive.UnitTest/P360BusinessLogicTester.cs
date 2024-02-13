@@ -1,6 +1,8 @@
 using DfoToa.Archive.Steps;
 using Moq;
 using P360Client;
+using P360Client.DTO;
+using P360Client.Resources;
 
 namespace DfoToa.Archive.UnitTest
 {
@@ -8,13 +10,10 @@ namespace DfoToa.Archive.UnitTest
     public class P360BusinessLogicTester
     {
         private Mock<IContext> _mockContext;
-        private Mock<CaseService.ICaseServiceClient> _mockCaseService;
-        private Mock<ContactService.IContactServiceClient> _mockContactService;
-        private Mock<DocumentService.IDocumentServiceClient> _mockDocumentService;
-        private Mock<FileService.IFileServiceClient> _mockFileService;
-        private Mock<ProjectService.IProjectServiceClient> _mockProjectService;
-        private Mock<SupportService.ISupportServiceClient> _mockSupportService;
-        private Client _client;
+        private Mock<ICaseResources> _mockCaseService;
+        private Mock<IContactResources> _mockContactService;
+        private Mock<IDocumentResources> _mockDocumentService;
+        private ResourceClient _client;
         DateTime inProductionDate = DateTime.Now.Date;
 
         public P360BusinessLogicTester()
@@ -28,11 +27,7 @@ namespace DfoToa.Archive.UnitTest
             _mockCaseService = new();
             _mockContactService = new();
             _mockDocumentService = new();
-            _mockFileService = new();
-            _mockProjectService = new();
-            _mockSupportService = new();
-            _client = new Client(_mockContext.Object, _mockCaseService.Object, _mockContactService.Object,
-                _mockDocumentService.Object, _mockFileService.Object, _mockProjectService.Object, _mockSupportService.Object);
+            _client = new ResourceClient(_mockCaseService.Object, _mockDocumentService.Object, _mockContactService.Object);
             P360BusinessLogic.Init(_mockContext.Object, _client);
         }
 
@@ -40,10 +35,9 @@ namespace DfoToa.Archive.UnitTest
         public async Task Run_called__GetPrivatePersonsAsync_returns_two_PrivatePersons__RunResult_Steps_is_empty()
         {
             // Given
-            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>())).Returns(Task.FromResult(new ContactService.Response5
-            {
-                PrivatePersons = new List<ContactService.PrivatePersons> { new ContactService.PrivatePersons(), new ContactService.PrivatePersons() } // Found 2 PrivatePersons.
-            }));
+            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>())).Returns(Task.FromResult<IEnumerable<PrivatePerson>>(
+                new List<PrivatePerson> { new(), new() } // Found 2 PrivatePersons.
+             ));
             string personalIdNumber = "personalIdNumber";
             string firstName = "firstName";
             string middleName = "middleName";
@@ -53,7 +47,7 @@ namespace DfoToa.Archive.UnitTest
             string zipPlace = "zipPlace";
             string mobilePhoneNumber = "mobilePhoneNumber";
             string email = "email";
-            DocumentService.Files2 fileInput = new DocumentService.Files2();
+            NewDocumentFile fileInput = new();
 
             // When
             RunResult runResult = new();
@@ -67,10 +61,9 @@ namespace DfoToa.Archive.UnitTest
         public async Task Run_called__GetPrivatePersonsAsync_returns_one_PrivatePersons_recno_not_given__Throws_exception()
         {
             // Given
-            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>())).Returns(Task.FromResult(new ContactService.Response5
-            {
-                PrivatePersons = new List<ContactService.PrivatePersons> { new ContactService.PrivatePersons() } // Found one PrivatePersons without recno.
-            }));
+            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>())).Returns(Task.FromResult<IEnumerable<PrivatePerson>>(
+                new List<PrivatePerson> { new() } // Found one PrivatePersons without recno.
+            ));
             string personalIdNumber = "personalIdNumber";
             string firstName = "firstName";
             string middleName = "middleName";
@@ -80,14 +73,14 @@ namespace DfoToa.Archive.UnitTest
             string zipPlace = "zipPlace";
             string mobilePhoneNumber = "mobilePhoneNumber";
             string email = "email";
-            DocumentService.Files2 fileInput = new DocumentService.Files2();
+            NewDocumentFile fileInput = new();
 
             // When
             async Task task() => await P360BusinessLogic.RunUploadFileToPrivatePerson(new RunResult(), personalIdNumber, firstName, middleName, lastName, streetAddress, zipCode, zipPlace, mobilePhoneNumber, email, fileInput);
             var ex = await Assert.ThrowsAsync<Exception>(task);
 
             // Then
-            _mockContactService.Verify(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>()), Times.Once);
+            _mockContactService.Verify(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>()), Times.Once);
             Assert.Equal("Recno is null. This property is required to have value.", ex.Message);
         }
 
@@ -107,44 +100,42 @@ namespace DfoToa.Archive.UnitTest
             const string MobilePhoneNumber = "mobilePhoneNumber";
             const string Email = "email";
 
-            DocumentService.Files2 fileInput = new();
+            NewDocumentFile fileInput = new();
 
-            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>())).Returns(Task.FromResult(new ContactService.Response5
-            {
-                PrivatePersons = new List<ContactService.PrivatePersons> { new ContactService.PrivatePersons { Recno = 1 } } // Found one PrivatePerson with recno.
-            }));
-            _mockCaseService.Setup(c => c.GetCasesAsync(It.IsAny<CaseService.GetCasesArgs>())).Returns(Task.FromResult(new CaseService.Response2
-            {
-                Cases = new List<CaseService.Cases> {
-                    new CaseService.Cases
+            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>())).Returns(Task.FromResult<IEnumerable<PrivatePerson>>(
+                new List<PrivatePerson> { new(){ Recno = 1 } } // Found one PrivatePerson with recno.
+            ));
+            _mockCaseService.Setup(c => c.GetCasesAsync(It.IsAny<GetCasesArgs>())).Returns(Task.FromResult<IEnumerable<Case>>(
+                new List<Case> {
+                    new()
                     {
                         CaseNumber = CaseNumber,
                         Status = "Under behandling",
                         CreatedDate = inProductionDate.AddDays(1)
                     } } // Found one case, in progress, created after InProductionDate.
-            }));
+            ));
 
-            DocumentService.CreateDocumentArgs? createDocumentResult = null;
-            _mockDocumentService.Setup(d => d.CreateDocumentAsync(It.IsAny<DocumentService.CreateDocumentArgs>()))
-                .Callback<DocumentService.CreateDocumentArgs>(r => createDocumentResult = r)
-                .Returns(Task.FromResult(new DocumentService.Response { DocumentNumber = DocumentNumber })); // Creates document.
+            CreateDocumentArgs? createDocumentResult = null;
+            _mockDocumentService.Setup(d => d.CreateDocumentAsync(It.IsAny<CreateDocumentArgs>()))
+                .Callback<CreateDocumentArgs>(r => createDocumentResult = r)
+                .Returns(Task.FromResult(DocumentNumber)); // Creates document.
 
-            DocumentService.UpdateDocumentArgs? updateDocumentArgs = null;
-            _mockDocumentService.Setup(d => d.UpdateDocumentAsync(It.IsAny<DocumentService.UpdateDocumentArgs>())).Callback<DocumentService.UpdateDocumentArgs>(u => updateDocumentArgs = u);
+            UpdateDocumentArgs? updateDocumentArgs = null;
+            _mockDocumentService.Setup(d => d.UpdateDocumentAsync(It.IsAny<UpdateDocumentArgs>())).Callback<UpdateDocumentArgs>(u => updateDocumentArgs = u);
 
             // When
             RunResult runResult = new();
             await P360BusinessLogic.RunUploadFileToPrivatePerson(runResult, PersonalIdNumber, FirstName, MiddleName, LastName, StreetAddress, ZipCode, ZipPlace, MobilePhoneNumber, Email, fileInput);
 
             // Then
-            _mockContactService.Verify(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>()), Times.Once);
-            _mockCaseService.Verify(c => c.GetCasesAsync(It.IsAny<CaseService.GetCasesArgs>()), Times.Once);
+            _mockContactService.Verify(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>()), Times.Once);
+            _mockCaseService.Verify(c => c.GetCasesAsync(It.IsAny<GetCasesArgs>()), Times.Once);
             Assert.DoesNotContain(runResult.Steps, s => s is CreateCaseStep);
             Assert.Single(runResult.Steps, s => s is CreateDocumentStep);
             Assert.Single(runResult.Steps, s => s is UpdateDocumentWithFileReferenceStep);
             Assert.Single(runResult.Steps, s => s is SignOffDocumentStep);
-            Assert.Equal(CaseNumber, createDocumentResult?.Parameter.CaseNumber);
-            Assert.Equal(DocumentNumber, updateDocumentArgs?.Parameter.DocumentNumber);
+            Assert.Equal(CaseNumber, createDocumentResult?.CaseNumber);
+            Assert.Equal(DocumentNumber, updateDocumentArgs?.DocumentNumber);
         }
 
         [Fact]
@@ -164,44 +155,42 @@ namespace DfoToa.Archive.UnitTest
             const string Email = "email";
             const int Recno = 1;
 
-            DocumentService.Files2 fileInput = new();
+            NewDocumentFile fileInput = new();
 
-            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>())).Returns(Task.FromResult(new ContactService.Response5
-            {
-                PrivatePersons = new List<ContactService.PrivatePersons> { new ContactService.PrivatePersons { Recno = Recno } } // Found one PrivatePerson with recno.
-            }));
-            _mockCaseService.Setup(c => c.GetCasesAsync(It.IsAny<CaseService.GetCasesArgs>())).Returns(Task.FromResult(new CaseService.Response2
-            {
-                Cases = new List<CaseService.Cases>() // No cases found.
-            }));
+            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>())).Returns(Task.FromResult<IEnumerable<PrivatePerson>>(
+                new List<PrivatePerson> { new(){ Recno = Recno } } // Found one PrivatePerson with recno.
+            ));
+            _mockCaseService.Setup(c => c.GetCasesAsync(It.IsAny<GetCasesArgs>())).Returns(Task.FromResult<IEnumerable<Case>>(
+                new List<Case>() // No cases found.
+            ));
 
-            CaseService.CreateCaseArgs? createCaseArgs = null;
-            _mockCaseService.Setup(c => c.CreateCaseAsync(It.IsAny<CaseService.CreateCaseArgs>()))
-                .Callback<CaseService.CreateCaseArgs>(c => createCaseArgs = c)
-                .Returns(Task.FromResult(new CaseService.Response { CaseNumber = CaseNumber })); // Case created.
+            CreateCaseArgs? createCaseArgs = null;
+            _mockCaseService.Setup(c => c.CreateCaseAsync(It.IsAny<CreateCaseArgs>()))
+                .Callback<CreateCaseArgs>(c => createCaseArgs = c)
+                .Returns(Task.FromResult(CaseNumber)); // Case created.
 
-            DocumentService.CreateDocumentArgs? createDocumentResult = null;
-            _mockDocumentService.Setup(d => d.CreateDocumentAsync(It.IsAny<DocumentService.CreateDocumentArgs>()))
-                .Callback<DocumentService.CreateDocumentArgs>(r => createDocumentResult = r)
-                .Returns(Task.FromResult(new DocumentService.Response { DocumentNumber = DocumentNumber })); // Creates document.
+            CreateDocumentArgs? createDocumentResult = null;
+            _mockDocumentService.Setup(d => d.CreateDocumentAsync(It.IsAny<CreateDocumentArgs>()))
+                .Callback<CreateDocumentArgs>(r => createDocumentResult = r)
+                .Returns(Task.FromResult(DocumentNumber)); // Creates document.
 
-            DocumentService.UpdateDocumentArgs? updateDocumentArgs = null;
-            _mockDocumentService.Setup(d => d.UpdateDocumentAsync(It.IsAny<DocumentService.UpdateDocumentArgs>())).Callback<DocumentService.UpdateDocumentArgs>(u => updateDocumentArgs = u);
+            UpdateDocumentArgs? updateDocumentArgs = null;
+            _mockDocumentService.Setup(d => d.UpdateDocumentAsync(It.IsAny<UpdateDocumentArgs>())).Callback<UpdateDocumentArgs>(u => updateDocumentArgs = u);
 
             // When
             RunResult runResult = new();
             await P360BusinessLogic.RunUploadFileToPrivatePerson(runResult, PersonalIdNumber, FirstName, MiddleName, LastName, StreetAddress, ZipCode, ZipPlace, MobilePhoneNumber, Email, fileInput);
 
             // Then
-            _mockContactService.Verify(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>()), Times.Once);
-            _mockCaseService.Verify(c => c.GetCasesAsync(It.IsAny<CaseService.GetCasesArgs>()), Times.Once);
+            _mockContactService.Verify(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>()), Times.Once);
+            _mockCaseService.Verify(c => c.GetCasesAsync(It.IsAny<GetCasesArgs>()), Times.Once);
             Assert.Single(runResult.Steps, s => s is CreateCaseStep);
             Assert.Single(runResult.Steps, s => s is CreateDocumentStep);
             Assert.Single(runResult.Steps, s => s is UpdateDocumentWithFileReferenceStep);
             Assert.Single(runResult.Steps, s => s is SignOffDocumentStep);
-            Assert.Equal($"recno:{Recno}", createCaseArgs?.Parameter.Contacts.First().ReferenceNumber);
-            Assert.Equal(CaseNumber, createDocumentResult?.Parameter.CaseNumber);
-            Assert.Equal(DocumentNumber, updateDocumentArgs?.Parameter.DocumentNumber);
+            Assert.Equal($"recno:{Recno}", createCaseArgs?.Contacts.First().ReferenceNumber);
+            Assert.Equal(CaseNumber, createDocumentResult?.CaseNumber);
+            Assert.Equal(DocumentNumber, updateDocumentArgs?.DocumentNumber);
         }
 
         [Fact]
@@ -221,46 +210,45 @@ namespace DfoToa.Archive.UnitTest
             const string Email = "email";
             const int Recno = 1;
 
-            DocumentService.Files2 fileInput = new();
+            NewDocumentFile fileInput = new();
 
-            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>())).Returns(Task.FromResult(new ContactService.Response5
-            {
-                PrivatePersons = new List<ContactService.PrivatePersons>() // Found zero PrivatePerson.
-            }));
+            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>())).Returns(Task.FromResult<IEnumerable<PrivatePerson>>(
+                new List<PrivatePerson>() // Found zero PrivatePerson.
+            ));
 
-            ContactService.SynchronizePrivatePersonArgs? synchronizePrivatePersonArgs = null;
-            _mockContactService.Setup(c => c.SynchronizePrivatePersonAsync(It.IsAny<ContactService.SynchronizePrivatePersonArgs>()))
-                .Callback<ContactService.SynchronizePrivatePersonArgs>(s => synchronizePrivatePersonArgs = s)
-                .Returns(Task.FromResult(new ContactService.Response2 { Recno = Recno }));
+            SynchronizePrivatePersonArgs? synchronizePrivatePersonArgs = null;
+            _mockContactService.Setup(c => c.SynchronizePrivatePersonAsync(It.IsAny<SynchronizePrivatePersonArgs>()))
+                .Callback<SynchronizePrivatePersonArgs>(s => synchronizePrivatePersonArgs = s)
+                .Returns(Task.FromResult<int?>(Recno));
 
-            CaseService.CreateCaseArgs? createCaseArgs = null;
-            _mockCaseService.Setup(c => c.CreateCaseAsync(It.IsAny<CaseService.CreateCaseArgs>()))
-                .Callback<CaseService.CreateCaseArgs>(c => createCaseArgs = c)
-                .Returns(Task.FromResult(new CaseService.Response { CaseNumber = CaseNumber })); // Case created.
+            CreateCaseArgs? createCaseArgs = null;
+            _mockCaseService.Setup(c => c.CreateCaseAsync(It.IsAny<CreateCaseArgs>()))
+                .Callback<CreateCaseArgs>(c => createCaseArgs = c)
+                .Returns(Task.FromResult(CaseNumber)); // Case created.
 
-            DocumentService.CreateDocumentArgs? createDocumentResult = null;
-            _mockDocumentService.Setup(d => d.CreateDocumentAsync(It.IsAny<DocumentService.CreateDocumentArgs>()))
-                .Callback<DocumentService.CreateDocumentArgs>(r => createDocumentResult = r)
-                .Returns(Task.FromResult(new DocumentService.Response { DocumentNumber = DocumentNumber })); // Creates document.
+            CreateDocumentArgs? createDocumentResult = null;
+            _mockDocumentService.Setup(d => d.CreateDocumentAsync(It.IsAny<CreateDocumentArgs>()))
+                .Callback<CreateDocumentArgs>(r => createDocumentResult = r)
+                .Returns(Task.FromResult(DocumentNumber)); // Creates document.
 
-            DocumentService.UpdateDocumentArgs? updateDocumentArgs = null;
-            _mockDocumentService.Setup(d => d.UpdateDocumentAsync(It.IsAny<DocumentService.UpdateDocumentArgs>())).Callback<DocumentService.UpdateDocumentArgs>(u => updateDocumentArgs = u);
+            UpdateDocumentArgs? updateDocumentArgs = null;
+            _mockDocumentService.Setup(d => d.UpdateDocumentAsync(It.IsAny<UpdateDocumentArgs>())).Callback<UpdateDocumentArgs>(u => updateDocumentArgs = u);
 
             // When
             RunResult runResult = new();
             await P360BusinessLogic.RunUploadFileToPrivatePerson(runResult, PersonalIdNumber, FirstName, MiddleName, LastName, StreetAddress, ZipCode, ZipPlace, MobilePhoneNumber, Email, fileInput);
 
             // Then
-            _mockContactService.Verify(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>()), Times.Once);
+            _mockContactService.Verify(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>()), Times.Once);
             Assert.Single(runResult.Steps, s => s is SynchronizePersonStep);
             Assert.Single(runResult.Steps, s => s is CreateCaseStep);
             Assert.Single(runResult.Steps, s => s is CreateDocumentStep);
             Assert.Single(runResult.Steps, s => s is UpdateDocumentWithFileReferenceStep);
             Assert.Single(runResult.Steps, s => s is SignOffDocumentStep);
-            Assert.Equal(PersonalIdNumber, synchronizePrivatePersonArgs?.Parameter.PersonalIdNumber);
-            Assert.Equal($"recno:{Recno}", createCaseArgs?.Parameter.Contacts.First().ReferenceNumber);
-            Assert.Equal(CaseNumber, createDocumentResult?.Parameter.CaseNumber);
-            Assert.Equal(DocumentNumber, updateDocumentArgs?.Parameter.DocumentNumber);
+            Assert.Equal(PersonalIdNumber, synchronizePrivatePersonArgs?.PersonalIdNumber);
+            Assert.Equal($"recno:{Recno}", createCaseArgs?.Contacts.First().ReferenceNumber);
+            Assert.Equal(CaseNumber, createDocumentResult?.CaseNumber);
+            Assert.Equal(DocumentNumber, updateDocumentArgs?.DocumentNumber);
         }
 
         [Fact]
@@ -279,24 +267,23 @@ namespace DfoToa.Archive.UnitTest
             const string Email = "email";
             const int Recno = 1;
 
-            DocumentService.Files2 fileInput = new();
+            NewDocumentFile fileInput = new();
 
-            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<ContactService.GetPrivatePersonsArgs>())).Returns(Task.FromResult(new ContactService.Response5
-            {
-                PrivatePersons = new List<ContactService.PrivatePersons>() // Found zero PrivatePerson.
-            }));
+            _mockContactService.Setup(c => c.GetPrivatePersonsAsync(It.IsAny<GetPrivatePersonsArgs>())).Returns(Task.FromResult<IEnumerable<PrivatePerson>>(
+                new List<PrivatePerson>() // Found zero PrivatePerson.
+            ));
 
-            ContactService.SynchronizePrivatePersonArgs? synchronizePrivatePersonArgs = null;
-            _mockContactService.Setup(c => c.SynchronizePrivatePersonAsync(It.IsAny<ContactService.SynchronizePrivatePersonArgs>()))
-                .Callback<ContactService.SynchronizePrivatePersonArgs>(s => synchronizePrivatePersonArgs = s)
-                .Returns(Task.FromResult(new ContactService.Response2 { Recno = Recno }));
+            SynchronizePrivatePersonArgs? synchronizePrivatePersonArgs = null;
+            _mockContactService.Setup(c => c.SynchronizePrivatePersonAsync(It.IsAny<SynchronizePrivatePersonArgs>()))
+                .Callback<SynchronizePrivatePersonArgs>(s => synchronizePrivatePersonArgs = s)
+                .Returns(Task.FromResult<int?>(Recno));
 
-            CaseService.CreateCaseArgs? createCaseArgs = null;
-            _mockCaseService.Setup(c => c.CreateCaseAsync(It.IsAny<CaseService.CreateCaseArgs>()))
-                .Callback<CaseService.CreateCaseArgs>(c => createCaseArgs = c)
-                .Returns(Task.FromResult(new CaseService.Response { CaseNumber = CaseNumber })); // Case created.
+            CreateCaseArgs? createCaseArgs = null;
+            _mockCaseService.Setup(c => c.CreateCaseAsync(It.IsAny<CreateCaseArgs>()))
+                .Callback<CreateCaseArgs>(c => createCaseArgs = c)
+                .Returns(Task.FromResult(CaseNumber)); // Case created.
 
-            _mockDocumentService.Setup(d => d.CreateDocumentAsync(It.IsAny<DocumentService.CreateDocumentArgs>())).Throws<Exception>(); // Create document throws exception.
+            _mockDocumentService.Setup(d => d.CreateDocumentAsync(It.IsAny<CreateDocumentArgs>())).Throws<Exception>(); // Create document throws exception.
 
             // When
             RunResult runResult = new RunResult();

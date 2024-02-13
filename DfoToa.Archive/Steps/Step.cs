@@ -15,7 +15,7 @@ public abstract class Step : IStep
     }
 
 
-    public async Task Execute(Client client)
+    public async Task Execute(ResourceClient client)
     {
         if (Success) return;
         try
@@ -29,10 +29,10 @@ public abstract class Step : IStep
         }
         Success = true;
     }
-    protected abstract Task ExecuteStep(Client client);
+    protected abstract Task ExecuteStep(ResourceClient client);
 
 
-    public async Task Execute<TStep>(Client client, TStep fromStep) where TStep : Step
+    public async Task Execute<TStep>(ResourceClient client, TStep fromStep) where TStep : Step
     {
         if (Success) return;
         try
@@ -46,5 +46,5 @@ public abstract class Step : IStep
         }
         Success = true;
     }
-    protected abstract Task ExecuteStep<TStep>(Client client, TStep fromStep) where TStep : Step;
+    protected abstract Task ExecuteStep<TStep>(ResourceClient client, TStep fromStep) where TStep : Step;
 }

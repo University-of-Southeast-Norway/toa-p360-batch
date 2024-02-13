@@ -109,7 +109,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="P360Client" Version="8.8.1" />
+		<PackageReference Include="P360Client" Version="8.10.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="[13.0.1,13.0.3]" />
 	</ItemGroup>
 

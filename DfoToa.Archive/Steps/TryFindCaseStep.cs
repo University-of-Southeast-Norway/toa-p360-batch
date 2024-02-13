@@ -1,4 +1,4 @@
-﻿using P360Client;
+﻿using P360Client.DTO;
 using static DfoToa.Archive.Steps.CreateCaseStep;
 using static DfoToa.Archive.Steps.CreateDocumentStep;
 
@@ -26,17 +26,17 @@ public class TryFindCaseStep : Step, IHaveCreateDocumentStepDependencies, IHaveC
         InProductionDate = inProductionDate;
     }
 
-    public CaseService.Cases FoundCase { get; set; }
+    public Case FoundCase { get; set; }
     public int? Recno { get; set; }
     public DateTimeOffset InProductionDate { get; set; }
     public string CaseNumber { get; set; }
 
-    protected override async Task ExecuteStep(Client client)
+    protected override async Task ExecuteStep(ResourceClient client)
     {
-        if (Recno == null) throw new Exception($"{nameof(Recno)} is null. Consider calling {nameof(TryFindCaseStep)}({typeof(Client)},{typeof(DateTimeOffset)},{typeof(int)}) if this is the first step.");
-        CaseService.Cases foundCase = null;
-        ICollection<CaseService.Cases> foundPersonCases = await GetCasesOnPerson(client, Recno.Value);
-        foreach (CaseService.Cases personCase in foundPersonCases?.OrderByDescending(f => f.CreatedDate))
+        if (Recno == null) throw new Exception($"{nameof(Recno)} is null. Consider calling {nameof(TryFindCaseStep)}({typeof(ResourceClient)},{typeof(DateTimeOffset)},{typeof(int)}) if this is the first step.");
+        Case foundCase = null;
+        IEnumerable<Case> foundPersonCases = await GetCasesOnPerson(client, Recno.Value);
+        foreach (Case personCase in foundPersonCases?.OrderByDescending(f => f.CreatedDate))
         {
             if (personCase.CreatedDate <= InProductionDate && personCase.Status != "Under behandling" && personCase.Status != "In progress")
             {
@@ -51,7 +51,7 @@ public class TryFindCaseStep : Step, IHaveCreateDocumentStepDependencies, IHaveC
         CaseNumber = FoundCase?.CaseNumber;
     }
 
-    protected override async Task ExecuteStep<TStep>(Client client, TStep fromStep)
+    protected override async Task ExecuteStep<TStep>(ResourceClient client, TStep fromStep)
     {
         if (fromStep is IHaveTryFindCaseStepDependencies step)
         {
@@ -62,11 +62,11 @@ public class TryFindCaseStep : Step, IHaveCreateDocumentStepDependencies, IHaveC
         throw new Exception($"Can't execute from step {fromStep.GetType()}. '{nameof(fromStep)}' must implement {typeof(IHaveTryFindCaseStepDependencies)}.");
     }
 
-    private async Task<ICollection<CaseService.Cases>> GetCasesOnPerson(Client client, int recno)
+    private async Task<IEnumerable<Case>> GetCasesOnPerson(ResourceClient client, int recno)
     {
         var getCasesArgs = JsonDeserializerObsolete.GetGetCaseArgs();
-        getCasesArgs.Parameter.ContactRecnos = new List<int> { recno };
-        ICollection<CaseService.Cases> result = await client.GetCasesAsync(getCasesArgs);
+        getCasesArgs.ContactRecnos = new List<int> { recno };
+        IEnumerable<Case> result = await client.CaseResources.GetCasesAsync(getCasesArgs);
         return result;
     }
 }

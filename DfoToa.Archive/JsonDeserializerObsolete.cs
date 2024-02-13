@@ -1,8 +1,7 @@
-﻿using CaseService;
-using ContactService;
-using DocumentService;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using P360Client.DTO;
 using System.Text;
+using File = System.IO.File;
 
 namespace DfoToa.Archive;
 
@@ -10,6 +9,7 @@ internal class JsonDeserializerObsolete
 {
     private readonly static string jsonConfigFileSynchronizePrivatePerson = File.ReadAllText(@"Definitions/synchronize_private_person.json", Encoding.UTF8);
     private readonly static string jsonConfigFileGetPrivatePersons = File.ReadAllText(@"Definitions/get_private_persons.json", Encoding.UTF8);
+    private readonly static string jsonConfigFileGetContactPersons = File.ReadAllText(@"Definitions/get_contact_persons.json", Encoding.UTF8);
     private readonly static string jsonConfigFileCreateCase = File.ReadAllText(@"Definitions/create_case.json", Encoding.UTF8);
     private readonly static string jsonConfigFileGetCases = File.ReadAllText(@"Definitions/get_cases.json", Encoding.UTF8);
     private readonly static string jsonConfigFileGetCasesResult = File.ReadAllText(@"Definitions/get_cases_result.json", Encoding.UTF8);
@@ -21,42 +21,47 @@ internal class JsonDeserializerObsolete
 
     internal static GetCasesArgs GetGetCaseArgs()
     {
-        return JsonConvert.DeserializeObject<GetCasesArgs>(jsonConfigFileGetCases);
+        return Convert<CaseService.GetCasesArgs, GetCasesArgs>(jsonConfigFileGetCases);
     }
 
     internal static CreateCaseArgs GetCreateCaseArgs()
     {
-        return JsonConvert.DeserializeObject<CreateCaseArgs>(jsonConfigFileCreateCase);
+        return Convert<CaseService.CreateCaseArgs, CreateCaseArgs>(jsonConfigFileCreateCase);
     }
 
     internal static CreateDocumentArgs GetCreateDocumentArgs()
     {
-        return JsonConvert.DeserializeObject<CreateDocumentArgs>(jsonConfigFileCreateDocument);
+        return Convert<DocumentService.CreateDocumentArgs, CreateDocumentArgs>(jsonConfigFileCreateDocument);
     }
 
     internal static GetDocumentsArgs GetGetDocumentArgs()
     {
-        return JsonConvert.DeserializeObject<GetDocumentsArgs>(jsonConfigFileGetDocuments);
+        return Convert<DocumentService.GetDocumentsArgs, GetDocumentsArgs>(jsonConfigFileGetDocuments);
     }
 
     internal static GetPrivatePersonsArgs GetPrivatePersonsArgs()
     {
-        return JsonConvert.DeserializeObject<GetPrivatePersonsArgs>(jsonConfigFileGetPrivatePersons);
+        return Convert<ContactService.GetPrivatePersonsArgs, GetPrivatePersonsArgs>(jsonConfigFileGetPrivatePersons);
+    }
+
+    internal static GetContactPersonsArgs GetContactPersonsArgs()
+    {
+        return Convert<ContactService.GetContactPersonsArgs, GetContactPersonsArgs>(jsonConfigFileGetContactPersons);
     }
 
     internal static SynchronizePrivatePersonArgs GetSynchronizePrivatePersonArgs()
     {
-        return JsonConvert.DeserializeObject<SynchronizePrivatePersonArgs>(jsonConfigFileSynchronizePrivatePerson);
+        return Convert<ContactService.SynchronizePrivatePersonArgs, SynchronizePrivatePersonArgs>(jsonConfigFileSynchronizePrivatePerson);
     }
 
     internal static UpdateDocumentArgs GetUpdateDocumentArgs()
     {
-        return JsonConvert.DeserializeObject<UpdateDocumentArgs>(jsonConfigFileUpdateDocument);
+        return Convert<DocumentService.UpdateDocumentArgs, UpdateDocumentArgs>(jsonConfigFileUpdateDocument);
     }
 
     internal static SignOffDocumentArgs GetSignOffDocumentArgs()
     {
-        return JsonConvert.DeserializeObject<SignOffDocumentArgs>(jsonConfigFileSignOffDocument);
+        return Convert<DocumentService.SignOffDocumentArgs, SignOffDocumentArgs>(jsonConfigFileSignOffDocument);
     }
 
     internal static FileService.UploadArgs GetUploadArgs()
@@ -67,5 +72,16 @@ internal class JsonDeserializerObsolete
     internal static RunResult GetRunResult(string json)
     {
         return JsonConvert.DeserializeObject<RunResult>(json, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+    }
+
+    private static TResult? Convert<TFrom, TResult>(string document)
+        where TFrom : class
+        where TResult : class
+    {
+        dynamic? from = JsonConvert.DeserializeObject<TFrom>(document);
+        if (from == null) return default;
+        string json = JsonConvert.SerializeObject(from.Parameter);
+        TResult? newArgs = JsonConvert.DeserializeObject<TResult>(json);
+        return newArgs;
     }
 }

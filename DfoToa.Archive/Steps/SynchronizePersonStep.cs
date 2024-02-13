@@ -1,4 +1,4 @@
-﻿using P360Client;
+﻿using P360Client.DTO;
 using static DfoToa.Archive.Steps.CreateCaseStep;
 using static DfoToa.Archive.Steps.TryFindCaseStep;
 
@@ -46,27 +46,27 @@ public class SynchronizePersonStep : Step, IHaveCreateCaseStepDependencies, IHav
     }
 
 
-    protected override async Task ExecuteStep(Client client)
+    protected override async Task ExecuteStep(ResourceClient client)
     {
-        if (PersonlIDNumber == null) throw new Exception($"{nameof(PersonlIDNumber)} is null. Consider calling {nameof(SynchronizePersonStep)}({typeof(Client)},{typeof(string)}...) if this is the first step.");
+        if (PersonlIDNumber == null) throw new Exception($"{nameof(PersonlIDNumber)} is null. Consider calling {nameof(SynchronizePersonStep)}({typeof(ResourceClient)},{typeof(string)}...) if this is the first step.");
         var synchronizePrivatePersonArgs = JsonDeserializerObsolete.GetSynchronizePrivatePersonArgs();
-        synchronizePrivatePersonArgs.Parameter.PersonalIdNumber = PersonlIDNumber;
-        synchronizePrivatePersonArgs.Parameter.FirstName = FirstName;
-        synchronizePrivatePersonArgs.Parameter.MiddleName = MiddleName;
-        synchronizePrivatePersonArgs.Parameter.LastName = LastName;
-        synchronizePrivatePersonArgs.Parameter.PrivateAddress = new ContactService.PrivateAddress2
+        synchronizePrivatePersonArgs.PersonalIdNumber = PersonlIDNumber;
+        synchronizePrivatePersonArgs.FirstName = FirstName;
+        synchronizePrivatePersonArgs.MiddleName = MiddleName;
+        synchronizePrivatePersonArgs.LastName = LastName;
+        synchronizePrivatePersonArgs.PrivateAddress = new Address
         {
             StreetAddress = StreetAddress,
             ZipCode = ZipCode,
             ZipPlace = ZipPlace,
             Country = "NOR"
         };
-        synchronizePrivatePersonArgs.Parameter.MobilePhone = MobilePhoneNumber;
-        synchronizePrivatePersonArgs.Parameter.Email = Email;
-        Recno = await client.SynchronizePrivatePersonAsync(synchronizePrivatePersonArgs);
+        synchronizePrivatePersonArgs.MobilePhone = MobilePhoneNumber;
+        synchronizePrivatePersonArgs.Email = Email;
+        Recno = await client.ContactResources.SynchronizePrivatePersonAsync(synchronizePrivatePersonArgs);
     }
 
-    protected override async Task ExecuteStep<TStep>(Client client, TStep fromStep)
+    protected override async Task ExecuteStep<TStep>(ResourceClient client, TStep fromStep)
     {
         if (fromStep is IHaveSynchronizePersonStepDependencies step)
         {

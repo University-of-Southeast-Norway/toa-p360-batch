@@ -1,4 +1,4 @@
-﻿using P360Client;
+﻿using P360Client.DTO;
 
 namespace DfoToa.Archive.Steps;
 
@@ -15,56 +15,56 @@ public class UpdateDocumentWithFileReferenceStep : Step, SignOffDocumentStep.IHa
 
     }
 
-    internal UpdateDocumentWithFileReferenceStep(string documentNumber, DocumentService.Files2 fileInput)
+    internal UpdateDocumentWithFileReferenceStep(string documentNumber, NewDocumentFile fileInput)
         : this(fileInput)
     {
         DocumentNumber = documentNumber;
     }
-    internal UpdateDocumentWithFileReferenceStep(DocumentService.Files2 fileInput) : this()
+    internal UpdateDocumentWithFileReferenceStep(NewDocumentFile fileInput) : this()
     {
         FileInput = fileInput;
     }
 
     public string DocumentNumber { get; set; }
-    public DocumentService.Files2 FileInput { get; set; }
+    public NewDocumentFile FileInput { get; set; }
 
-    protected override async Task ExecuteStep(Client client)
+    protected override async Task ExecuteStep(ResourceClient client)
     {
-        var updateDocumentArgs = JsonDeserializerObsolete.GetUpdateDocumentArgs();
-        DocumentService.Files2 templateFile = updateDocumentArgs.Parameter.Files?.FirstOrDefault();
+        UpdateDocumentArgs updateDocumentArgs = JsonDeserializerObsolete.GetUpdateDocumentArgs();
+        NewDocumentFile? templateFile = updateDocumentArgs.Files?.FirstOrDefault();
         if (templateFile != null)
         {
-            templateFile.Title = templateFile.Title ?? FileInput.Title;
-            templateFile.Status = templateFile.Status ?? FileInput.Status;
-            templateFile.Note = templateFile.Note ?? FileInput.Note;
-            templateFile.PaperLocation = templateFile.PaperLocation ?? FileInput.PaperLocation;
-            templateFile.AccessCode = templateFile.AccessCode ?? FileInput.AccessCode;
-            templateFile.AdditionalFields = templateFile.AdditionalFields ?? FileInput.AdditionalFields;
-            templateFile.Category = templateFile.Category ?? FileInput.Category;
-            templateFile.DegradeCode = templateFile.DegradeCode ?? FileInput.DegradeCode;
-            templateFile.DegradeDate = templateFile.DegradeDate ?? FileInput.DegradeDate;
-            templateFile.FiledOnPaper = templateFile.FiledOnPaper ?? FileInput.FiledOnPaper;
-            templateFile.Format = templateFile.Format ?? FileInput.Format;
-            templateFile.PaperLocation = templateFile.PaperLocation ?? FileInput.PaperLocation;
-            templateFile.RelationType = templateFile.RelationType ?? FileInput.RelationType;
-            templateFile.UploadedFileReference = templateFile.UploadedFileReference ?? FileInput.UploadedFileReference;
-            templateFile.Base64Data = templateFile.Base64Data ?? FileInput.Base64Data;
-            templateFile.VersionFormat = templateFile.VersionFormat ?? FileInput.VersionFormat;
-            templateFile.Data = templateFile.Data ?? FileInput.Data;
+            templateFile.ExternalId ??= FileInput.ExternalId;
+            templateFile.FiledOnPaper ??= FileInput.FiledOnPaper;
+            templateFile.Title ??= FileInput.Title;
+            templateFile.Status ??= FileInput.Status;
+            templateFile.Note ??= FileInput.Note;
+            templateFile.PaperLocation ??= FileInput.PaperLocation;
+            templateFile.AccessCode ??= FileInput.AccessCode;
+            templateFile.Category ??= FileInput.Category;
+            templateFile.DegradeCode ??= FileInput.DegradeCode;
+            templateFile.DegradeDate ??= FileInput.DegradeDate;
+            templateFile.Format ??= FileInput.Format;
+            templateFile.PaperLocation ??= FileInput.PaperLocation;
+            templateFile.RelationType ??= FileInput.RelationType;
+            templateFile.UploadedFileReference ??= FileInput.UploadedFileReference;
+            templateFile.Base64Data ??= FileInput.Base64Data;
+            templateFile.VersionFormat ??= FileInput.VersionFormat;
+            templateFile.Data ??= FileInput.Data;
         }
         else
         {
-            ICollection<DocumentService.Files2> files = new List<DocumentService.Files2>
+            List<NewDocumentFile> files = new()
             {
                 FileInput
             };
-            updateDocumentArgs.Parameter.Files = files;
+            updateDocumentArgs.Files = files;
         }
-        updateDocumentArgs.Parameter.DocumentNumber = DocumentNumber;
-        await client.UpdateDocumentAsync(updateDocumentArgs);
+        updateDocumentArgs.DocumentNumber = DocumentNumber;
+        await client.DocumentResources.UpdateDocumentAsync(updateDocumentArgs);
     }
 
-    protected override async Task ExecuteStep<TStep>(Client client, TStep fromStep)
+    protected override async Task ExecuteStep<TStep>(ResourceClient client, TStep fromStep)
     {
         if (fromStep is IHaveUpdateDocumentWithFileReferenceStepDependencies step)
         {

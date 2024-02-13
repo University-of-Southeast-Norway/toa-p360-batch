@@ -1,5 +1,6 @@
 {
   "parameter": {
-    "ADContextUser": "swi\\360integration"
+    "ADContextUser": "swi\\360integration",
+    "Categories": [ "Ansatt" ]
   }
 }

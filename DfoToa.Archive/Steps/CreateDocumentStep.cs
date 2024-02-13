@@ -1,4 +1,4 @@
-﻿using P360Client;
+﻿using P360Client.DTO;
 using static DfoToa.Archive.Steps.UpdateDocumentWithFileReferenceStep;
 
 namespace DfoToa.Archive.Steps;
@@ -29,17 +29,17 @@ public class CreateDocumentStep : Step, IHaveUpdateDocumentWithFileReferenceStep
     public int? Recno { get; set; }
     public DateTimeOffset? DocumentDate { get; set; }
 
-    protected override async Task ExecuteStep(Client client)
+    protected override async Task ExecuteStep(ResourceClient client)
     {
         var createDocumentArgs = JsonDeserializerObsolete.GetCreateDocumentArgs();
-        createDocumentArgs.Parameter.CaseNumber = CaseNumber;
-        createDocumentArgs.Parameter.DocumentDate = DocumentDate ?? DateTimeOffset.Now.Date;
-        DocumentService.Contacts submitter = createDocumentArgs.Parameter.Contacts.FirstOrDefault(f => f.Role == "Avsender");
+        createDocumentArgs.CaseNumber = CaseNumber;
+        createDocumentArgs.DocumentDate = DocumentDate ?? DateTimeOffset.Now.Date;
+        ContactReference? submitter = createDocumentArgs.Contacts.FirstOrDefault(f => f.Role == "Avsender");
         if (submitter != null && Recno.HasValue) submitter.ReferenceNumber = "recno:" + Recno;
-        DocumentNumber = await client.CreateDocumentAsync(createDocumentArgs);
+        DocumentNumber = await client.DocumentResources.CreateDocumentAsync(createDocumentArgs);
     }
 
-    protected override async Task ExecuteStep<TStep>(Client client, TStep fromStep)
+    protected override async Task ExecuteStep<TStep>(ResourceClient client, TStep fromStep)
     {
         if (fromStep is IHaveCreateDocumentStepDependencies step)
         {

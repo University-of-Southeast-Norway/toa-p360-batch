@@ -1,6 +1,8 @@
 ﻿using Moq;
 using P360Client;
+using P360Client.DTO;
 using System.Text;
+using File = System.IO.File;
 
 namespace DfoToa.Archive.IntegrationTest
 {
@@ -23,10 +25,12 @@ namespace DfoToa.Archive.IntegrationTest
             string zipPlace = "Tønsberg";
             string mobilePhoneNumber = "11111111";
             string email = "paalegg@broedski.ve";
-            DocumentService.Files2 fileInput = new DocumentService.Files2();
-            fileInput.Title = "testFile.pdf";
-            fileInput.Note = "00CE84DAECD9C419D8173BCBF9372160";
-            fileInput.Format = "txt";
+            NewDocumentFile fileInput = new()
+            {
+                Title = "testFile.pdf",
+                Note = "00CE84DAECD9C419D8173BCBF9372160",
+                Format = "txt"
+            };
             var fileContentBase64 = File.ReadAllText(@"Data\ContractFileContent.txt");
             var plainTextBytes = Encoding.UTF8.GetBytes(fileContentBase64);
             fileInput.Base64Data = Convert.ToBase64String(plainTextBytes);
@@ -53,9 +57,11 @@ namespace DfoToa.Archive.IntegrationTest
             string zipPlace = "Tønsberg";
             string mobilePhoneNumber = "11111111";
             string email = "paalegg@broedski.ve";
-            DocumentService.Files2 fileInput = new DocumentService.Files2();
-            fileInput.Title = "testFile.pdf";
-            fileInput.Format = "txt";
+            NewDocumentFile fileInput = new()
+            {
+                Title = "testFile.pdf",
+                Format = "txt"
+            };
             var fileContentBase64 = File.ReadAllText(@"Data\ContractFileContent.txt");
             var plainTextBytes = Encoding.UTF8.GetBytes(fileContentBase64);
             fileInput.Base64Data = Convert.ToBase64String(plainTextBytes);
