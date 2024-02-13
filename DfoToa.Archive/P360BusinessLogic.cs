@@ -2,6 +2,7 @@
 using DfoToa.Archive.Steps;
 using P360Client.Resources;
 using P360Client.DTO;
+using P360Client.Domain;
 
 
 namespace DfoToa.Archive;
@@ -50,7 +51,7 @@ public static class P360BusinessLogic
 
     private static async Task<IEnumerable<PrivatePerson>> GetPrivatePersons(string personlIdNumber)
     {
-        var getPrivatePersonsArgs = JsonDeserializerObsolete.GetPrivatePersonsArgs();
+        var getPrivatePersonsArgs = await JsonDeserializer.GetPrivatePersonsArgsAsync();
         getPrivatePersonsArgs.PersonalIdNumber = personlIdNumber;
         return await _client!.ContactResources.GetPrivatePersonsAsync(getPrivatePersonsArgs);
     }
@@ -115,7 +116,7 @@ public static class P360BusinessLogic
 
     private static async Task<IEnumerable<Document>> FindDocuments(string caseNumber)
     {
-        var getDocumentsArgs = JsonDeserializerObsolete.GetGetDocumentArgs();
+        var getDocumentsArgs = await JsonDeserializer.GetGetDocumentArgsAsync();
         getDocumentsArgs.CaseNumber = caseNumber;
 
         return await _client!.DocumentResources.GetDocumentsAsync(getDocumentsArgs);
@@ -140,7 +141,7 @@ public static class P360BusinessLogic
 
     private static async Task<IEnumerable<Case>> GetCasesOnPerson(ResourceClient client, int recno)
     {
-        GetCasesArgs getCasesArgs = JsonDeserializerObsolete.GetGetCaseArgs();
+        GetCasesArgs getCasesArgs = await JsonDeserializer.GetGetCaseArgsAsync();
         getCasesArgs.ContactRecnos = new List<int> { recno };
         IEnumerable<Case> result = await client.CaseResources.GetCasesAsync(getCasesArgs);
         return result;

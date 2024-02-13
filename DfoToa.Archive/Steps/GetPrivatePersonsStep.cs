@@ -1,4 +1,5 @@
-﻿using P360Client.DTO;
+﻿using P360Client.Domain;
+using P360Client.DTO;
 using static DfoToa.Archive.Steps.SynchronizePersonStep;
 using static DfoToa.Archive.Steps.TryFindCaseStep;
 
@@ -26,7 +27,7 @@ public class GetPrivatePersonsStep : Step, IHaveTryFindCaseStepDependencies, IHa
 
     protected override async Task ExecuteStep(ResourceClient client)
     {
-        var getPrivatePersonsArgs = JsonDeserializerObsolete.GetPrivatePersonsArgs();
+        var getPrivatePersonsArgs = await JsonDeserializer.GetPrivatePersonsArgsAsync();
         getPrivatePersonsArgs.PersonalIdNumber = PersonlIdNumber;
         PrivatePersons = await client.ContactResources.GetPrivatePersonsAsync(getPrivatePersonsArgs);
         Recno = PrivatePersons?.FirstOrDefault()?.Recno; // TODO: Find better solution to this logic. It assumes that we only found one PrivatePersons.

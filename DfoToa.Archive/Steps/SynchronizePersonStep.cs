@@ -1,4 +1,5 @@
-﻿using P360Client.DTO;
+﻿using P360Client.Domain;
+using P360Client.DTO;
 using static DfoToa.Archive.Steps.CreateCaseStep;
 using static DfoToa.Archive.Steps.TryFindCaseStep;
 
@@ -49,7 +50,7 @@ public class SynchronizePersonStep : Step, IHaveCreateCaseStepDependencies, IHav
     protected override async Task ExecuteStep(ResourceClient client)
     {
         if (PersonlIDNumber == null) throw new Exception($"{nameof(PersonlIDNumber)} is null. Consider calling {nameof(SynchronizePersonStep)}({typeof(ResourceClient)},{typeof(string)}...) if this is the first step.");
-        var synchronizePrivatePersonArgs = JsonDeserializerObsolete.GetSynchronizePrivatePersonArgs();
+        var synchronizePrivatePersonArgs = await JsonDeserializer.GetSynchronizePrivatePersonArgsAsync();
         synchronizePrivatePersonArgs.PersonalIdNumber = PersonlIDNumber;
         synchronizePrivatePersonArgs.FirstName = FirstName;
         synchronizePrivatePersonArgs.MiddleName = MiddleName;

@@ -1,4 +1,5 @@
-﻿using P360Client.DTO;
+﻿using P360Client.Domain;
+using P360Client.DTO;
 
 namespace DfoToa.Archive.Steps;
 
@@ -30,7 +31,7 @@ public class UpdateDocumentWithFileReferenceStep : Step, SignOffDocumentStep.IHa
 
     protected override async Task ExecuteStep(ResourceClient client)
     {
-        UpdateDocumentArgs updateDocumentArgs = JsonDeserializerObsolete.GetUpdateDocumentArgs();
+        UpdateDocumentArgs updateDocumentArgs = await JsonDeserializer.GetUpdateDocumentArgsAsync();
         NewDocumentFile? templateFile = updateDocumentArgs.Files?.FirstOrDefault();
         if (templateFile != null)
         {

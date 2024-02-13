@@ -1,4 +1,5 @@
-﻿using static DfoToa.Archive.Steps.CreateDocumentStep;
+﻿using P360Client.Domain;
+using static DfoToa.Archive.Steps.CreateDocumentStep;
 
 namespace DfoToa.Archive.Steps;
 
@@ -24,7 +25,7 @@ public class CreateCaseStep : Step, IHaveCreateDocumentStepDependencies
     protected override async Task ExecuteStep(ResourceClient client)
     {
         if (Recno == null) throw new Exception($"{nameof(Recno)} is null. Consider calling {nameof(CreateCaseStep)}({typeof(ResourceClient)},{typeof(int)}) if this is the first step.");
-        var createCaseArgs = JsonDeserializerObsolete.GetCreateCaseArgs();
+        var createCaseArgs = await JsonDeserializer.GetCreateCaseArgsAsync();
         if (createCaseArgs.Contacts != null)
         {
             createCaseArgs.Contacts.First().ReferenceNumber = "recno:" + Recno;

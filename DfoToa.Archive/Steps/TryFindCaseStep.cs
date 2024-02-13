@@ -1,4 +1,5 @@
-﻿using P360Client.DTO;
+﻿using P360Client.Domain;
+using P360Client.DTO;
 using static DfoToa.Archive.Steps.CreateCaseStep;
 using static DfoToa.Archive.Steps.CreateDocumentStep;
 
@@ -64,7 +65,7 @@ public class TryFindCaseStep : Step, IHaveCreateDocumentStepDependencies, IHaveC
 
     private async Task<IEnumerable<Case>> GetCasesOnPerson(ResourceClient client, int recno)
     {
-        var getCasesArgs = JsonDeserializerObsolete.GetGetCaseArgs();
+        var getCasesArgs = await JsonDeserializer.GetGetCaseArgsAsync();
         getCasesArgs.ContactRecnos = new List<int> { recno };
         IEnumerable<Case> result = await client.CaseResources.GetCasesAsync(getCasesArgs);
         return result;
