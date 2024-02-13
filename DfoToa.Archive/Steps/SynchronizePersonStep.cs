@@ -1,5 +1,4 @@
-﻿using P360Client.Domain;
-using P360Client.DTO;
+﻿using P360Client.DTO;
 using static DfoToa.Archive.Steps.CreateCaseStep;
 using static DfoToa.Archive.Steps.TryFindCaseStep;
 

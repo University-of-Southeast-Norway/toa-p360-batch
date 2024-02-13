@@ -1,6 +1,4 @@
-﻿using P360Client.Domain;
-
-namespace DfoToa.Archive.Steps;
+﻿namespace DfoToa.Archive.Steps;
 
 public class SignOffDocumentStep : Step
 {

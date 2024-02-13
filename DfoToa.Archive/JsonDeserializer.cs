@@ -1,8 +1,8 @@
-﻿using DfoToa.Archive;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using P360Client.Domain;
 using P360Client.DTO;
 
-namespace P360Client.Domain;
+namespace DfoToa.Archive;
 
 internal class JsonDeserializer
 {
