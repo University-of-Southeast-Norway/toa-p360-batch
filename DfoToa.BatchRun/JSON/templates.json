@@ -1,0 +1,6 @@
+{
+  "responsible": {
+    "externalId": "string([any string]|{employee.id}|{employee.email}|{caseManager.id}|{caseManager.email}|[any string])",
+    "email": "string([any string]|{employee.id}|{employee.email}|{caseManager.id}|{caseManager.email}|[any string])"
+  }
+}

@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using DfoToa.Archive.Steps;
+﻿using DfoToa.Archive.Steps;
 using P360Client.Resources;
 using P360Client.DTO;
 
@@ -23,7 +22,7 @@ public static class P360BusinessLogic
         _client = client;
     }
 
-    public static async Task RunUploadFileToPrivatePerson(RunResult runResult, string personalIdNumber, string firstName, string middleName, string lastName, string streetAddress, string zipCode, string zipPlace, string mobilePhoneNumber, string email, NewDocumentFile fileInput, DateTimeOffset? documentDate = null)
+    public static async Task RunUploadFileToPrivatePerson(RunResult runResult, string personalIdNumber, string firstName, string middleName, string lastName, string streetAddress, string zipCode, string zipPlace, string mobilePhoneNumber, string email, NewDocumentFile fileInput, DateTimeOffset? documentDate = null, PrivatePerson? responsiblePerson = null, IEnumerable<PrivatePerson>? receivers = null)
     {
         CheckState();
 
@@ -33,7 +32,7 @@ public static class P360BusinessLogic
 
         if (!privatePersons.Any())
         {
-            WhenNoExistingPersonFound(runResult, personalIdNumber, firstName, middleName, lastName, streetAddress, zipCode, zipPlace, mobilePhoneNumber, email, fileInput, documentDate);
+            WhenNoExistingPersonFound(runResult, personalIdNumber, firstName, middleName, lastName, streetAddress, zipCode, zipPlace, mobilePhoneNumber, email, fileInput, documentDate, responsiblePerson, receivers);
         }
         else if (privatePersons.Count() > 1)
         {
@@ -42,7 +41,7 @@ public static class P360BusinessLogic
         }
         else
         {
-            await WhenUniquePersonFound(runResult, fileInput, inProductionDate, privatePersons.Single(), documentDate);
+            await WhenUniquePersonFound(runResult, fileInput, inProductionDate, privatePersons.Single(), documentDate, responsiblePerson, receivers);
         }
 
         await Execute(runResult);
@@ -55,7 +54,7 @@ public static class P360BusinessLogic
         return await _client!.ContactResources.GetPrivatePersonsAsync(getPrivatePersonsArgs);
     }
 
-    private static async Task WhenUniquePersonFound(RunResult runResult, NewDocumentFile fileInput, DateTimeOffset inProductionDate, PrivatePerson privatePerson, DateTimeOffset? documentDate = null)
+    private static async Task WhenUniquePersonFound(RunResult runResult, NewDocumentFile fileInput, DateTimeOffset inProductionDate, PrivatePerson privatePerson, DateTimeOffset? documentDate, PrivatePerson? responsiblePerson, IEnumerable<PrivatePerson>? receivers)
     {
         if (!privatePerson.Recno.HasValue) throw new Exception($"{nameof(ContactService.PrivatePersons.Recno)} is null. This property is required to have value.");
         _context!.CurrentLogger.WriteToLog($"Found one person with social security number {privatePerson.PersonalIdNumber} with recno {privatePerson.Recno}.");
@@ -65,21 +64,19 @@ public static class P360BusinessLogic
         {
             _context.CurrentLogger.WriteToLog($"No case found on {privatePerson.PersonalIdNumber}. New case will be created.");
             runResult.AddCreateCaseStep(privatePerson.Recno.Value);
-            runResult.AddCreateDocumentStep(documentDate);
+            runResult.AddCreateDocumentStep(documentDate, responsiblePerson, receivers);
         }
         else
         {
             _context.CurrentLogger.WriteToLog($"Existing case, with case number {foundCase.CaseNumber}, found on person with social security number {privatePerson.PersonalIdNumber}.");
-            IEnumerable<Document> documents = await FindDocuments(foundCase.CaseNumber);
+            IEnumerable<Document> existingDocuments = await FindDocuments(foundCase.CaseNumber);
 
-            if (documents?.Any(d => d.Files is JContainer jsonFiles
-                && jsonFiles?.First?.ToObject(typeof(DocumentService.Files2)) is DocumentService.Files2 file
-                && fileInput.Note != null && file.Note == fileInput.Note) == true)
+            if (existingDocuments?.Any(d => d.Files.Any(existingFile => !string.IsNullOrEmpty(fileInput.Note) && existingFile.Note == fileInput.Note)) == true)
             {
-                _context.CurrentLogger.WriteToLog($"File being uploaded is already attached to document {documents.First().DocumentNumber}.");
+                _context.CurrentLogger.WriteToLog($"File being uploaded is already attached to document {existingDocuments.First().DocumentNumber}.");
                 return;
             }
-            runResult.AddCreateDocumentStep(foundCase.CaseNumber, privatePerson.Recno, documentDate);
+            runResult.AddCreateDocumentStep(foundCase.CaseNumber, privatePerson.Recno, documentDate, responsiblePerson, receivers);
         }
         AddCommonSteps(runResult, fileInput);
     }
@@ -155,13 +152,13 @@ public static class P360BusinessLogic
         }
     }
 
-    private static void WhenNoExistingPersonFound(RunResult runResult, string personalIdNumber, string firstName, string middleName, string lastName, string streetAddress, string zipCode, string zipPlace, string mobilePhoneNumber, string email, NewDocumentFile fileInput, DateTimeOffset? documentDate = null)
+    private static void WhenNoExistingPersonFound(RunResult runResult, string personalIdNumber, string firstName, string middleName, string lastName, string streetAddress, string zipCode, string zipPlace, string mobilePhoneNumber, string email, NewDocumentFile fileInput, DateTimeOffset? documentDate, PrivatePerson? responsiblePerson, IEnumerable<PrivatePerson>? receivers)
     {
         _context!.CurrentLogger.WriteToLog($"Couldn't find any person that match social security number {personalIdNumber}.");
 
         runResult.AddSynchronizePersonStep(personalIdNumber, firstName, middleName, lastName, streetAddress, zipCode, zipPlace, mobilePhoneNumber, email);
         runResult.AddCreateCaseStep();
-        runResult.AddCreateDocumentStep(documentDate);
+        runResult.AddCreateDocumentStep(documentDate,responsiblePerson, receivers);
         AddCommonSteps(runResult, fileInput);
     }
 

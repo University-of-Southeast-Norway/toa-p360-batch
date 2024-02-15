@@ -18,4 +18,7 @@ public interface IContext : Archive.IContext
     DateTimeOffset SearchDate { get; }
     ITokenResolver TokenResolver { get; }
     IProvideApiKey ApiKeyProvider { get; }
+    IMappingTemplates MappingTemplates { get; }
+    string? CaseManagerExternalId { get; }
+    string? CaseManagerEmail { get; }
 }

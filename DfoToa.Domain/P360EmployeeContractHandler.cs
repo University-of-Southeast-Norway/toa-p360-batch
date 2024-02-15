@@ -14,7 +14,7 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
         Context = context;
     }
 
-    public async Task RunAsync(Employee employee, Contract contract)
+    public async Task RunAsync(Employee employee, Contract contract, Employee? caseManager)
     {
         NewDocumentFile contractFile = new()
         {
@@ -40,7 +40,19 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
             }
             else
             {
-                await P360BusinessLogic.RunUploadFileToPrivatePerson(runResult, employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile, contract.Date);
+                UniqueQueryAttributesTemplate? responsibleTemplate = await Context.MappingTemplates.GetResponsibleTemplate();
+                string? externalId = responsibleTemplate?.ExternalId;
+                string? email = responsibleTemplate?.Email;
+                PrivatePerson? responsiblePerson = null;
+                if (caseManager is not null)
+                {
+                    responsiblePerson = new()
+                    {
+                        ExternalID = externalId?.Replace("{dfo.caseManager.id}", caseManager.Id)?.Replace("{dfo.caseManager.email}", caseManager.Email),
+                        Email = email?.Replace("{dfo.caseManager.id}", caseManager.Id)?.Replace("{dfo.caseManager.email}", caseManager.Email)
+                    };
+                }
+                await P360BusinessLogic.RunUploadFileToPrivatePerson(runResult, employee.SocialSecurityNumber, employee.FirstName, null, employee.LastName, employee.Address, employee.Zipcode, employee.City, employee.PhoneNumber, employee.Email, contractFile, contract.Date, responsiblePerson, null);
             }
             await Context.Reporter.Report($"{nameof(contract.SequenceNumber)}:{contract.SequenceNumber};{nameof(contract.ContractId)}:{contract.ContractId};{nameof(contract.EmployeeId)}:{contract.EmployeeId};{runResult}");
         }

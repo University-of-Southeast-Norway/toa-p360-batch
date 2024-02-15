@@ -46,8 +46,14 @@ public class ArchiveHandler
             Employee employee = await client.GetEmployeeAsync(employeeContract.Id, Context.SearchDate);
             Console.WriteLine($"Fant ansatt {employee}");
             Context.CurrentLogger.WriteToLog($"Fant ansatt {employee}");
+            Employee? caseManager = (await client.QueryEmployeeAsync(dfoBrukerident: employeeContract.CaseManager)).FirstOrDefault();
+            if (caseManager is not null)
+            {
+                Console.WriteLine($"Fant saksbehandler {caseManager}");
+                Context.CurrentLogger.WriteToLog($"Fant saksbehandler {caseManager}");
+            }
 
-            await employeeContractHandler.RunAsync(employee, contract);
+            await employeeContractHandler.RunAsync(employee, contract, caseManager);
         }
         catch (Exception ex)
         {

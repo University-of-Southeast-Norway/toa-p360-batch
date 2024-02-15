@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using P360Client;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 
 namespace DfoToa.BatchRun
 {
@@ -37,7 +38,7 @@ namespace DfoToa.BatchRun
 
         public string ApiKey => _dynamicGeneral.p360ApiKey.ToString();
 
-        public string AdContextUser => throw new NotImplementedException();
+        public string AdContextUser => @"swi\360integration";
         public string InProductionDate => _dynamicGeneral.inProductionDate.ToString();
         public ILog CurrentLogger => _currentLogger;
         public string LogFilePath => $"{_dynamicGeneral.logFolder.ToString().Trim('/').Trim('\\')}/log_{DateTimeOffset.Now:dd.MM.yyyy-HH.mm.ss}.txt";
@@ -63,11 +64,38 @@ namespace DfoToa.BatchRun
 
         public DateTimeOffset SearchDate => DateTimeOffset.ParseExact(InProductionDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
+        public string? CaseManagerExternalId => _dynamicGeneral.template?.caseManager?.externalId?.ToString();
+        public string? CaseManagerEmail => _dynamicGeneral.template?.caseManager?.email?.ToString();
+
         private readonly ITokenResolver _tokenResolver;
         public ITokenResolver TokenResolver => _tokenResolver;
 
         IProvideApiKey _apiKeyProvider;
         public IProvideApiKey ApiKeyProvider => _apiKeyProvider ?? (_apiKeyProvider = GetApiKeyProvider());
+
+        IMappingTemplates _mappingTemplates;
+        public IMappingTemplates MappingTemplates => _mappingTemplates ??= new FromJsonMappingTemplate();
+
+        private class FromJsonMappingTemplate : IMappingTemplates
+        {
+            private static readonly string _jsonTemplates = File.ReadAllText(@"JSON/templates.json");
+            private readonly Templates? _templates;
+            internal FromJsonMappingTemplate()
+            {
+                _templates = JsonSerializer.Deserialize<Templates>(_jsonTemplates, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            }
+            public Task<UniqueQueryAttributesTemplate?> GetResponsibleTemplate()
+            {
+                return Task.FromResult(_templates!.Responsible);
+            }
+
+            private class Templates
+            {
+                public UniqueQueryAttributesTemplate? Sender { get; set; }
+                public UniqueQueryAttributesTemplate? Responsible { get; set; }
+                public UniqueQueryAttributesTemplate? Receiver { get; set; }
+            }
+        }
 
         private IProvideApiKey GetApiKeyProvider()
         {

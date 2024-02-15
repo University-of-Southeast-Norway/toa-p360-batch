@@ -35,13 +35,13 @@ public class RunResult
 
     public bool Unfinished => Steps.Any(s => !s.Success);
 
-    internal CreateDocumentStep AddCreateDocumentStep(DateTimeOffset? documentDate)
+    internal CreateDocumentStep AddCreateDocumentStep(DateTimeOffset? documentDate, PrivatePerson? responsiblePerson, IEnumerable<PrivatePerson>? receivers)
     {
-        return AddStep(new CreateDocumentStep(documentDate));
+        return AddStep(new CreateDocumentStep(documentDate, responsiblePerson, receivers));
     }
-    internal CreateDocumentStep AddCreateDocumentStep(string caseNumber, int? recno, DateTimeOffset? documentDate = null)
+    internal CreateDocumentStep AddCreateDocumentStep(string caseNumber, int? recno, DateTimeOffset? documentDate, PrivatePerson? responsiblePerson, IEnumerable<PrivatePerson>? receivers)
     {
-        return AddStep(new CreateDocumentStep(caseNumber, recno, documentDate));
+        return AddStep(new CreateDocumentStep(caseNumber, recno, documentDate, responsiblePerson, receivers));
     }
 
     internal UpdateDocumentWithFileReferenceStep AddUpdateDocumentWithFileReferenceStep(NewDocumentFile fileInput)
