@@ -88,12 +88,17 @@ namespace DfoToa.BatchRun
             {
                 return Task.FromResult(_templates!.Responsible);
             }
+            public Task<UniqueTitlesTemplate?> GetTitlesTemplate()
+            {
+                return Task.FromResult(_templates!.Titles);
+            }
 
             private class Templates
             {
                 public UniqueQueryAttributesTemplate? Sender { get; set; }
                 public UniqueQueryAttributesTemplate? Responsible { get; set; }
                 public UniqueQueryAttributesTemplate? Receiver { get; set; }
+                public UniqueTitlesTemplate? Titles { get; set; }
             }
         }
 

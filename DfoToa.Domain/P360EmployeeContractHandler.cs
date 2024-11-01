@@ -1,4 +1,5 @@
 ﻿using DfoClient;
+using DfoClient.Dto;
 using DfoToa.Archive;
 using P360Client.Domain;
 using P360Client.DTO;
@@ -14,11 +15,20 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
         Context = context;
     }
 
-    public async Task RunAsync(Employee employee, Contract contract, Employee? caseManager)
+    public async Task RunAsync(Employee employee, Contract contract, EmployeeContract employeeContract, Employee? caseManager)
     {
+        UniqueTitlesTemplate? template = await Context.MappingTemplates.GetTitlesTemplate();
+        string title = $"Signert avtale {contract.SequenceNumber}";
+        if (!string.IsNullOrEmpty(template?.File))
+        {
+            title = template.File.Replace("{contract.sequenceNumber}", contract.SequenceNumber)
+                .Replace("{contract.contractNumber}", contract.ContractId)
+                .Replace("{employeeContract.startDate}", employeeContract.StartDate.ToString("dd.MM.yyyy"))
+                .Replace("{employeeContract.endDate}", employeeContract.EndDate.ToString("dd.MM.yyyy"));
+        }
         NewDocumentFile contractFile = new()
         {
-            Title = $"Signert avtale {contract.SequenceNumber}",
+            Title = title,
             Format = "pdf",
             Note = Utility.CreateChecksum(contract.FileContent),
             Base64Data = contract.FileContent
@@ -44,7 +54,7 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
                 string? externalId = responsibleTemplate?.ExternalId;
                 string? email = responsibleTemplate?.Email;
                 PrivatePerson? responsiblePerson = null;
-                if (caseManager is not null)
+                if (responsibleTemplate is not null && caseManager is not null)
                 {
                     responsiblePerson = new()
                     {

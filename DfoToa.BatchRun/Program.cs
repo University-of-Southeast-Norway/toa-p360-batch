@@ -8,11 +8,7 @@ string? dateTo = null;
 
 var argumentUtility = new ArgumentUtility(Environment.GetCommandLineArgs());
 var consoleHelper = new ConsoleHelper(argumentUtility.Silent);
-#if DEBUG
-dateFrom = "20230601";
-dateTo = "20230602";
-bool proceed = true;
-#else
+
 if (argumentUtility.HelpNeeded()) return;
 
 bool proceed;
@@ -33,7 +29,7 @@ if (string.IsNullOrEmpty(argumentUtility.SequenceNumber))
     proceed = consoleHelper.Proceed($"Er du sikker på at du vil arkivere avtaler fra {dateFrom} til {dateTo}? (Ja/Nei) ");
 }
 else proceed = consoleHelper.Proceed($"Er du sikker på at du vil arkivere avtale med sekvensnummer {argumentUtility.SequenceNumber}? (Ja/Nei) ");
-#endif
+
 
 
 if (proceed)

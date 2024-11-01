@@ -1,5 +1,8 @@
 {
   "responsible": {
     "email": "{dfo.caseManager.email}"
+  },
+  "titles": {
+    "file": "Signert avtale {contract.sequenceNumber} {contract.contractNumber} {employeeContract.startDate} - {employeeContract.endDate}"
   }
 }

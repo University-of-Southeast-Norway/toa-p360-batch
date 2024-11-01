@@ -6,7 +6,7 @@
     },
     "debug": {
       "commandName": "Project",
-      "commandLineArgs": "-f 20210201 -t 20210301 -h"
+      "commandLineArgs": "-f 20240901 -t 20241101 -s"
     }
   }
 }

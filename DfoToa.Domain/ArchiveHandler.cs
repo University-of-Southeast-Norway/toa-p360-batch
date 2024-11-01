@@ -1,4 +1,5 @@
 ﻿using DfoClient;
+using DfoClient.Dto;
 using Ks.Fiks.Maskinporten.Client;
 using System.Security.Cryptography.X509Certificates;
 
@@ -46,14 +47,14 @@ public class ArchiveHandler
             Employee employee = await client.GetEmployeeAsync(employeeContract.Id, Context.SearchDate);
             Console.WriteLine($"Fant ansatt {employee}");
             Context.CurrentLogger.WriteToLog($"Fant ansatt {employee}");
-            Employee? caseManager = (await client.QueryEmployeeAsync(dfoBrukerident: employeeContract.CaseManager)).FirstOrDefault();
+            Employee? caseManager = (await client.QueryEmployeeAsync(dfoBrukerident: employeeContract.CaseHandler)).FirstOrDefault();
             if (caseManager is not null)
             {
                 Console.WriteLine($"Fant saksbehandler {caseManager}");
                 Context.CurrentLogger.WriteToLog($"Fant saksbehandler {caseManager}");
             }
 
-            await employeeContractHandler.RunAsync(employee, contract, caseManager);
+            await employeeContractHandler.RunAsync(employee, contract, employeeContract, caseManager);
         }
         catch (Exception ex)
         {

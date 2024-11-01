@@ -1,6 +1,9 @@
 {
   "responsible": {
-    "externalId": "string([any string]|{employee.id}|{employee.email}|{caseManager.id}|{caseManager.email}|[any string])",
-    "email": "string([any string]|{employee.id}|{employee.email}|{caseManager.id}|{caseManager.email}|[any string])"
+    "externalId": "string([any string]|{employee.id}|[any string]|{employee.email}|[any string]|{caseManager.id}|[any string]|{caseManager.email}|[any string])",
+    "email": "string([any string]|{employee.id}|[any string]|{employee.email}|[any string]|{caseManager.id}|[any string]|{caseManager.email}|[any string])"
+  },
+  "titles": {
+    "file": "string([any string]|{contract.sequenceNumber}|[any string]|{contract.contractNumber}|[any string]|{employeeContract.startDate}|[any string]|{employeeContract.endDate}[any string])"
   }
 }
