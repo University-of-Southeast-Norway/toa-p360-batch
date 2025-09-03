@@ -9,7 +9,7 @@
 	  <Authors>USN SDO</Authors>
 	  <Company>USN</Company>
 	  <Description>Domain logic for DFØ/TOA.</Description>
-	  <Copyright>USN 2022</Copyright>
+	  <Copyright>USN 2025</Copyright>
 	  <PackageProjectUrl>https://dev.azure.com/USN-SDO/Felles</PackageProjectUrl>
 	  <RepositoryUrl>https://dev.azure.com/USN-SDO/Felles/_git/dfo-client</RepositoryUrl>
   </PropertyGroup>
