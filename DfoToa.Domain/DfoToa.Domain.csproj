@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net6.0</TargetFramework>
-	  <ImplicitUsings Condition=" '$(TargetFramework)' == 'net6.0' ">enable</ImplicitUsings>
-	  <Nullable Condition=" '$(TargetFramework)' == 'net6.0' ">enable</Nullable>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
 	  <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	  <Title>DFØ/TOA domain logic</Title>
 	  <Authors>USN SDO</Authors>
