@@ -44,7 +44,7 @@ public class ArchiveHandler
             EmployeeContract employeeContract = await client.GetEmployeeContractAsync(contract.EmployeeId, contract.ContractId);
             Console.WriteLine($"Fant avtale {employeeContract}");
             Context.CurrentLogger.WriteToLog($"Fant avtale {employeeContract}");
-            Employee employee = await client.GetEmployeeAsync(employeeContract.Id, Context.SearchDate);
+            Employee employee = await client.GetEmployeeAsync(employeeContract.Id, employeeContract.StartDate > DateTime.MinValue ? employeeContract.StartDate : Context.SearchDate);
             Console.WriteLine($"Fant ansatt {employee}");
             Context.CurrentLogger.WriteToLog($"Fant ansatt {employee}");
             Employee? caseManager = (await client.QueryEmployeeAsync(dfoBrukerident: employeeContract.CaseHandler)).FirstOrDefault();
