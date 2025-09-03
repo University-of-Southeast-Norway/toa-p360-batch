@@ -39,9 +39,9 @@ jobs:
       - name: Restore NuGet Packages
         run: dotnet restore
       - name: Build for linux
-        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net6.0 --runtime linux-x64 -p:PublishProfile=linux
+        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net8.0 --runtime linux-x64 -p:PublishProfile=linux
       - name: Build for windows
-        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net6.0 --runtime win-x64 -p:PublishProfile=windows
+        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net8.0 --runtime win-x64 -p:PublishProfile=windows
       - name: Test
         run: dotnet test ${{ env.test_project }} --no-restore --verbosity normal
 
