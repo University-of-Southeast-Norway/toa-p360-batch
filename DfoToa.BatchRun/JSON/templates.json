@@ -1,7 +1,7 @@
 {
   "responsible": {
-    "externalId": "string([any string]|{employee.id}|[any string]|{employee.email}|[any string]|{caseManager.id}|[any string]|{caseManager.email}|[any string])",
-    "email": "string([any string]|{employee.id}|[any string]|{employee.email}|[any string]|{caseManager.id}|[any string]|{caseManager.email}|[any string])"
+    "externalId": "{employee.id}|{employee.email}|{caseManager.id}|{caseManager.email}",
+    "email": "{employee.id}|{employee.email}|{caseManager.id}|{caseManager.email}"
   },
   "titles": {
     "file": "string([any string]|{contract.sequenceNumber}|[any string]|{contract.contractNumber}|[any string]|{employeeContract.startDate}|[any string]|{employeeContract.endDate}[any string])"
