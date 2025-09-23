@@ -131,4 +131,15 @@ _api_keys_ - som et alternativ til Maskinporten kan man sette opp autentisering 
 
 _scope_ - det må oppgis header og API-nøkkel for dfo:ansatte dfo:ansatte/infokontrakter dfo:infokontrakter/filer
   - Som angitt i _general.example.json setter man opp en nøkkel for hvert scope, men det er mulig å gjenbruke samme nøkkel dersom man har valgt å pakke scope sammen i gateway (IntArk)
+
+## Oppsett av maler
+Det medfølger en fil, JSON/templates.json, som brukes til å konfigurere et mal oppsett. Per nå er det to mal-oppsett deler. Du kan også se i JSON/templates.example.json for eksempler på konfigurasjon.
+### ``` responsbile ```
+Dersom det er behov for å koble ansatt ansvarlig for kontrakt med dokumentet i P360 defineres dette i ``` responsbile ```. Her oppgir du hvilken identifikator fra DFØ som kan matche mot en av kontaktperson identifikatorene ``` externalId ``` eller ``` email ``` i P360. Du legger inn en av identifikatorene fra DFØ:
+```
+{employee.id}|{employee.email}|{caseManager.id}|{caseManager.email}
+```
+Dersom du ikke ønsker å koble på ansatt ansvarlig for kontrakt som kontaktperson i P360 fjerner du hele ``` responsbile ``` elementet.
  
+### ``` titles ```
+Her legger du inn hvordan titler skal bygges. Per nå er det filnavnet i på fila som skal lastes opp i P360 som kan defineres. Tittel på fila kan bygges opp av en kombinasjon av både fritekst og elementer fra DFØ. Se JSON/templates.example.json for eksempel på hvordan filnavn kan bygges.
