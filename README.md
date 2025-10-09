@@ -113,7 +113,11 @@ Konfigurasjon av miljø settes opp i filen _JSON/\_general.config_. Det medfølg
 ### Parametere:
 _inProductionDate_ - Dette feltet brukes til å hindre at man gjenbruker gamle saker som matcher på feltene som er satt opp i _get_cases.json_. Dette kan være saker som er lagt inn manuelt på en person i P360 og som det tilfeldigvis oppstår en match på. For å unngå at en gammel sak gjenbrukes kan man sette dette feltet til datoen for første kjøring av denne løsningen, slik at man ved fremtidige første og fremtidige kjøringer kun bruker saken som er opprettet av denne løsningen. Man kan også bruke dette feltet dersom man ønsker å tvinge opprettelse av en ny sak på person ved overføring av nye avtaler ved en senere anledning.
 
-_p360ApiKey_ – institusjonens unike API-nøkkel
+_p360ApiKey_ – institusjonens unike API-nøkkel, brukes for kobling direkte mot P360 API
+
+_p360BaseAddress_ – base-adressen til P360 API, brukes for kobling direkte mot P360 API
+
+_p360IntArk_ - settes opp dersom kall mot P360 API skal gå via IntArk
 
 _maskinporten_ –
 - path: angi katalog-sti til plassering av institusjonens sertifikat (p12 fil)
