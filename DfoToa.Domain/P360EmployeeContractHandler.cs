@@ -10,7 +10,7 @@ public class P360EmployeeContractHandler : IEmployeeContractHandler
 {
     public IContext Context { get; set; }
 
-    public P360EmployeeContractHandler(IContext context)
+    public P360EmployeeContractHandler(IContext context) 
     {
         Context = context;
     }

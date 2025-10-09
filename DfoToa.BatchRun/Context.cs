@@ -1,9 +1,13 @@
 ﻿using DfoClient;
 using DfoToa.Domain;
 using Ks.Fiks.Maskinporten.Client;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using P360Client;
+using P360Client.Configurations;
+using P360Client.Resources;
 using System.Globalization;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
@@ -12,31 +16,66 @@ namespace DfoToa.BatchRun
     internal class DefaultContext : Domain.IContext, IDisposable
     {
         private static readonly string _jsonGeneral = File.ReadAllText(@"JSON/_general.json");
-        private readonly dynamic _dynamicGeneral = JObject.Parse(_jsonGeneral);
-        private static DefaultContext _defaultContext;
+        private readonly dynamic _dynamicGeneral;
+        private static DefaultContext _currentContext = new();
         private static readonly object _theLock = new object();
         private IReport? _reporter;
         private IHandleStateFiles? _stateFileHandler;
-        public static DefaultContext Current { get { return GetSingleton() ; } }
+        public static DefaultContext Current { get { return _currentContext; } }
 
-        private static DefaultContext GetSingleton()
+        private DefaultContext()
         {
-            lock (_theLock)
-            {
-                _defaultContext = new DefaultContext() ;
-                if (_defaultContext == null)
-                {
-                    _defaultContext = new DefaultContext();
-                }
-                return _defaultContext;
-            }
+            _dynamicGeneral = JObject.Parse(_jsonGeneral);
+            _tokenResolver = new TokenResolverClass(this);
+            CaseOptions = CreateOptions(_dynamicGeneral.p360IntArk?.caseServices);
+            DocumentOptions = CreateOptions(_dynamicGeneral.p360IntArk?.documentServices);
+            ContactOptions = CreateOptions(_dynamicGeneral.p360IntArk?.contactServices);
+
+            IClientFactory clientFactory = new P360IntArkClientFactory(this);
+            CaseResources = IsCaseServicesSetupWithIntArk ? new CaseResources(clientFactory, CaseOptions) : new CaseResources(CaseOptions);
+            DocumentResources = IsDocumentServicesSetupWithIntArk ? new DocumentResources(clientFactory, DocumentOptions) : new DocumentResources(DocumentOptions);
+            ContactResources = IsContactServicesSetupWithIntArk ? new ContactResources(clientFactory, ContactOptions) : new ContactResources(ContactOptions);
         }
 
-        private DefaultContext(){ _tokenResolver = new TokenResolverClass(this); }
-
         public string BaseAddress => _dynamicGeneral.p360BaseAddress.ToString();
-
         public string ApiKey => _dynamicGeneral.p360ApiKey.ToString();
+
+        public bool IsCaseServicesSetupWithIntArk => _dynamicGeneral.p360IntArk?.caseServices is not null;
+        public bool IsDocumentServicesSetupWithIntArk => _dynamicGeneral.p360IntArk?.documentServices is not null;
+        public bool IsContactServicesSetupWithIntArk => _dynamicGeneral.p360IntArk?.contactServices is not null;
+
+        internal IOptionsMonitor<ClientOptions> CaseOptions { get; private set; }
+        internal IOptionsMonitor<ClientOptions> DocumentOptions { get; private set; }
+        internal IOptionsMonitor<ClientOptions> ContactOptions { get; private set; }
+
+        public ICaseResources CaseResources { get; private set; }
+        public IDocumentResources DocumentResources { get; private set; }
+        public IContactResources ContactResources { get; private set; }
+
+        private Options<ClientOptions> CreateOptions(object sectionObject)
+        {
+            dynamic section = sectionObject;
+            ClientOptions options;
+            if (section is null)
+            {
+                options = new()
+                {
+                    AdContextUser = AdContextUser,
+                    ApiKey = ApiKey,
+                    BaseAddress = BaseAddress
+                };
+            }
+            else
+            {
+                options = new()
+                {
+                    AdContextUser = AdContextUser,
+                    ApiKey = section.apiKey,
+                    BaseAddress = section.baseAddress
+                };
+            }
+            return new Options<ClientOptions>(options);
+        }
 
         public string AdContextUser => @"swi\360integration";
         public string InProductionDate => _dynamicGeneral.inProductionDate.ToString();
@@ -68,6 +107,7 @@ namespace DfoToa.BatchRun
         public string? CaseManagerEmail => _dynamicGeneral.template?.caseManager?.email?.ToString();
 
         private readonly ITokenResolver _tokenResolver;
+
         public ITokenResolver TokenResolver => _tokenResolver;
 
         IProvideApiKey _apiKeyProvider;
@@ -124,6 +164,69 @@ namespace DfoToa.BatchRun
                 }
             }
         }
+
+        public class Options<T>(T _configuration) : IOptionsMonitor<T>, IDisposable
+        where T : class
+        {
+            public T CurrentValue => _configuration;
+
+            public void Dispose()
+            {
+            }
+
+            public T Get(string name)
+            {
+                return _configuration;
+            }
+
+            public IDisposable OnChange(Action<T, string> listener)
+            {
+                listener(_configuration, "");
+                return this;
+            }
+        }
+
+        public class P360IntArkClientFactory(DefaultContext _defaultContext) : IClientFactory
+        {
+            public TClient CreateClient<TClient>()
+            {
+                Type tClientType = typeof(TClient);
+                return (TClient)CreateClient(tClientType);
+            }
+
+            public object? CreateClient(Type clientType)
+            {
+                if (clientType == typeof(CaseService.ICaseServiceClient))
+                {
+                    return new CaseService.Client(CreateHttpClientForIntArk(_defaultContext.CaseOptions!), httpClientConfiguredWithBaseUrl: true);
+                }
+                if (clientType == typeof(DocumentService.IDocumentServiceClient))
+                {
+                    return new DocumentService.Client(CreateHttpClientForIntArk(_defaultContext.DocumentOptions!), httpClientConfiguredWithBaseUrl: true);
+                }
+                if (clientType == typeof(ContactService.IContactServiceClient))
+                {
+                    return new ContactService.Client(CreateHttpClientForIntArk(_defaultContext.ContactOptions!), httpClientConfiguredWithBaseUrl: true);
+                }
+
+                throw new Exception("Type is invalid");
+            }
+            public static HttpClient CreateHttpClientForIntArk(IOptionsMonitor<ClientOptions> options)
+            {
+                HttpClientHandler messageHandler = new()
+                {
+                     AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                };
+                HttpClient client = new(messageHandler)
+                {
+                    Timeout = new TimeSpan(0, 3, 0),
+                    BaseAddress = new(options.CurrentValue.BaseAddress)
+                };
+                client.DefaultRequestHeaders.Add("X-Gravitee-Api-Key", options.CurrentValue.ApiKey);
+                return client;
+            }
+        }
+
 
         private class TokenResolverClass : ITokenResolver
         {

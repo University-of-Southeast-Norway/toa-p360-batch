@@ -1,6 +1,8 @@
 ﻿using DfoToa.Archive.Steps;
 using P360Client.Resources;
 using P360Client.DTO;
+using Microsoft.Extensions.Options;
+using P360Client.Configurations;
 
 
 namespace DfoToa.Archive;
@@ -13,7 +15,8 @@ public static class P360BusinessLogic
 
     public static void Init(IContext context)
     {
-        Init(context, new ResourceClient(new CaseResources(context), new DocumentResources(context), new ContactResources(context)));
+
+        Init(context, new ResourceClient(context.CaseResources, context.DocumentResources, context.ContactResources));
     }
 
     public static void Init(IContext context, ResourceClient client)
