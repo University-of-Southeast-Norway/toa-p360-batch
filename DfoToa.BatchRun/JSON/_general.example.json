@@ -5,6 +5,20 @@
   "stateFolder": "state",
   "p360ApiKey": "",
   "p360BaseAddress": "https://<institution>.public360online.com", // TEST: https://<institution>.public360online.com
+  "p360IntArk": {
+    "caseServices": {
+      "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path>/",
+      "apiKey": ""
+    },
+    "documentServices": {
+      "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path>/",
+      "apiKey": ""
+    },
+    "contactServices": {
+      "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path>/",
+      "apiKey": ""
+    }
+  },
   "dfo": {
     "api_base": "https://api.dfo.no/" // TEST: https://api-test.dfo.no/
   },
