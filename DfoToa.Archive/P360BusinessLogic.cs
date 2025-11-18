@@ -39,7 +39,7 @@ public static class P360BusinessLogic
         }
         else if (privatePersons.Count() > 1)
         {
-            WhenToManyPersonsFound(personalIdNumber, privatePersons);
+            await WhenMultiplePersonsFound(runResult, fileInput, inProductionDate, personalIdNumber, privatePersons, documentDate, responsiblePerson, receivers);
             return;
         }
         else
@@ -146,12 +146,26 @@ public static class P360BusinessLogic
         return result;
     }
 
-    private static void WhenToManyPersonsFound(string personalIdNumber, IEnumerable<PrivatePerson> privatePersons)
+    private static async Task WhenMultiplePersonsFound(RunResult runResult, NewDocumentFile fileInput, DateTimeOffset inProductionDate, string personalIdNumber, IEnumerable<PrivatePerson> privatePersons, DateTimeOffset? documentDate, PrivatePerson? responsiblePerson, IEnumerable<PrivatePerson>? receivers)
     {
         _context!.CurrentLogger.WriteToLog($"Found 2 or more persons with social security number {personalIdNumber} with the following recno:");
         foreach (var person in privatePersons)
         {
-            _context.CurrentLogger.WriteToLog($"Recno:{person.Recno}");
+            _context.CurrentLogger.WriteToLog($"Recno: {person.Recno}");
+        }
+        const string Ansatt = nameof(Ansatt);
+        _context!.CurrentLogger.WriteToLog($"Try to locate person with category '{Ansatt}'");
+        try
+        {
+            PrivatePerson? employee = privatePersons.SingleOrDefault(pp => pp.Categories.Contains(Ansatt));
+            if (employee is not null)
+            {
+                await WhenUniquePersonFound(runResult, fileInput, inProductionDate, employee, documentDate, responsiblePerson, receivers);
+            }
+        }
+        catch
+        {
+            _context!.CurrentLogger.WriteToLog($"Multiple persons with category '{Ansatt}' found, will not continue archiving");
         }
     }
 

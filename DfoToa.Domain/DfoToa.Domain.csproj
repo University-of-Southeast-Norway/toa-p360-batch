@@ -15,10 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DfoClient" Version="9.1.0" />
-    <PackageReference Include="InformationManager.Api.Client" Version="1.0.1" />
+    <PackageReference Include="DfoClient" Version="9.2.0" />
+    <PackageReference Include="InformationManager.Api.Client" Version="5.0.2" />
     <PackageReference Include="KS.Fiks.Maskinporten.Client" Version="1.1.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="P360Client" Version="11.0.0" />
     <PackageReference Include="P360Client.Domain" Version="13.0.0" />
   </ItemGroup>
