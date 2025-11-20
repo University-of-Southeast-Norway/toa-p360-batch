@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DfoClient" Version="9.2.0" />
+    <PackageReference Include="DfoClient" Version="9.2.1" />
     <PackageReference Include="KS.Fiks.Maskinporten.Client" Version="1.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
