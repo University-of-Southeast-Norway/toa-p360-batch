@@ -1,8 +1,6 @@
 ﻿using DfoToa.Archive.Steps;
-using P360Client.Resources;
 using P360Client.DTO;
-using Microsoft.Extensions.Options;
-using P360Client.Configurations;
+using System.Text.RegularExpressions;
 
 
 namespace DfoToa.Archive;
@@ -16,7 +14,7 @@ public static class P360BusinessLogic
     public static void Init(IContext context)
     {
 
-        Init(context, new ResourceClient(context.CaseResources, context.DocumentResources, context.ContactResources));
+        Init(context, new ResourceClient(context.CaseResources, context.DocumentResources, context.ContactResources,  context.SupportResources));
     }
 
     public static void Init(IContext context, ResourceClient client)
@@ -31,7 +29,7 @@ public static class P360BusinessLogic
 
         DateTimeOffset inProductionDate = DateTimeOffset.Parse(_context!.InProductionDate);
 
-        var privatePersons = await GetPrivatePersons(personalIdNumber);
+        IEnumerable<PrivatePerson> privatePersons = await GetPrivatePersons(personalIdNumber);
 
         if (!privatePersons.Any())
         {
@@ -153,20 +151,45 @@ public static class P360BusinessLogic
         {
             _context.CurrentLogger.WriteToLog($"Recno: {person.Recno}");
         }
+        PrivatePerson? employee = await TryGetUniqueEmployee(privatePersons);
+        if (employee is not null)
+        {
+            await WhenUniquePersonFound(runResult, fileInput, inProductionDate, employee, documentDate, responsiblePerson, receivers);
+        }
+    }
+
+    private static async Task<PrivatePerson?> TryGetUniqueEmployee(IEnumerable<PrivatePerson> privatePersons)
+    {
         const string Ansatt = nameof(Ansatt);
         _context!.CurrentLogger.WriteToLog($"Try to locate person with category '{Ansatt}'");
+        IEnumerable<CodeTableRow> codeTableRows;
         try
         {
-            PrivatePerson? employee = privatePersons.SingleOrDefault(pp => pp.Categories.Contains(Ansatt));
-            if (employee is not null)
+            GetCodeTableRowsResponse? result = await _client!.SupportResources.GetCodeTableRows(new GetCodeTableRowsParameters { CodeTableName = CodeTableNames.ContactCategory });
+            codeTableRows = result?.CodeTableRows ?? [];
+        }
+        catch (Exception ex)
+        {
+            _context!.CurrentLogger.WriteToLog($"Failed to fetch code tables from Public 360 with error message '{ex.Message}', will not continue archiving");
+            return null;
+        }
+        try
+        {
+            PrivatePerson? employee = privatePersons.SingleOrDefault(pp => pp.Categories.Any(ppc => codeTableRows.Any(ctr => ctr.Recno == fetchRecnoFunc(ppc) && ctr.Code == Ansatt)));
+            if (employee is null) _context!.CurrentLogger.WriteToLog($"None of the persons have category '{Ansatt}'");
+
+            static int fetchRecnoFunc(string input)
             {
-                await WhenUniquePersonFound(runResult, fileInput, inProductionDate, employee, documentDate, responsiblePerson, receivers);
+                Match match = Regex.Match(input, @"\d+");
+                return match.Success ? int.Parse(match.Value) : -1;
             }
         }
         catch
         {
             _context!.CurrentLogger.WriteToLog($"Multiple persons with category '{Ansatt}' found, will not continue archiving");
         }
+
+        return null;
     }
 
     private static void WhenNoExistingPersonFound(RunResult runResult, string personalIdNumber, string firstName, string middleName, string lastName, string streetAddress, string zipCode, string zipPlace, string mobilePhoneNumber, string email, NewDocumentFile fileInput, DateTimeOffset? documentDate, PrivatePerson? responsiblePerson, IEnumerable<PrivatePerson>? receivers)

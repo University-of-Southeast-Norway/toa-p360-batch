@@ -13,6 +13,7 @@ namespace DfoToa.Archive.UnitTest
         private Mock<ICaseResources> _mockCaseService;
         private Mock<IContactResources> _mockContactService;
         private Mock<IDocumentResources> _mockDocumentService;
+        private Mock<ISupportResources> _mockSupportService;
         private ResourceClient _client;
         DateTime inProductionDate = DateTime.Now.Date;
 
@@ -27,7 +28,8 @@ namespace DfoToa.Archive.UnitTest
             _mockCaseService = new();
             _mockContactService = new();
             _mockDocumentService = new();
-            _client = new ResourceClient(_mockCaseService.Object, _mockDocumentService.Object, _mockContactService.Object);
+            _mockSupportService = new();
+            _client = new ResourceClient(_mockCaseService.Object, _mockDocumentService.Object, _mockContactService.Object, _mockSupportService.Object);
             P360BusinessLogic.Init(_mockContext.Object, _client);
         }
 

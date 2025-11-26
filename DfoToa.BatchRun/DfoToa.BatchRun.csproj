@@ -7,8 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <Copyright>USN 2025</Copyright>
-      <VersionPrefix>6.1.1</VersionPrefix>
+      <VersionPrefix>6.2.0</VersionPrefix>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Refit" Version="8.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DfoToa.Archive\DfoToa.Archive.csproj" />

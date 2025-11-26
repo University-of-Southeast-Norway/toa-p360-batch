@@ -8,4 +8,5 @@ public interface IContext : P360Client.IContext
     ICaseResources CaseResources { get; }
     IDocumentResources DocumentResources { get; }
     IContactResources ContactResources { get; }
+    ISupportResources SupportResources { get; }
 }

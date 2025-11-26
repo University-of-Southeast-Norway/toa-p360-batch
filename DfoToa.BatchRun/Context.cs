@@ -1,11 +1,15 @@
 ﻿using DfoClient;
 using DfoToa.Domain;
 using Ks.Fiks.Maskinporten.Client;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using P360Client;
 using P360Client.Configurations;
 using P360Client.Resources;
+using Refit;
+using Service;
+using SupportService;
 using System.Globalization;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -30,11 +34,13 @@ namespace DfoToa.BatchRun
             CaseOptions = CreateOptions(_dynamicGeneral.p360IntArk?.caseServices);
             DocumentOptions = CreateOptions(_dynamicGeneral.p360IntArk?.documentServices);
             ContactOptions = CreateOptions(_dynamicGeneral.p360IntArk?.contactServices);
+            SupportOptions = CreateOptions(_dynamicGeneral.p360IntArk?.supportServices);
 
             IClientFactory clientFactory = new P360IntArkClientFactory(this);
             CaseResources = IsCaseServicesSetupWithIntArk ? new CaseResources(clientFactory, CaseOptions) : new CaseResources(CaseOptions);
             DocumentResources = IsDocumentServicesSetupWithIntArk ? new DocumentResources(clientFactory, DocumentOptions) : new DocumentResources(DocumentOptions);
             ContactResources = IsContactServicesSetupWithIntArk ? new ContactResources(clientFactory, ContactOptions) : new ContactResources(ContactOptions);
+            SupportResources = IsContactServicesSetupWithIntArk ? new SupportResources(new SupportApiClientIntArk(SupportOptions)) : new SupportResources(new SupportApiClientDirect(ContactOptions));
         }
 
         public string BaseAddress => _dynamicGeneral.p360BaseAddress.ToString();
@@ -47,10 +53,12 @@ namespace DfoToa.BatchRun
         internal IOptionsMonitor<ClientOptions> CaseOptions { get; private set; }
         internal IOptionsMonitor<ClientOptions> DocumentOptions { get; private set; }
         internal IOptionsMonitor<ClientOptions> ContactOptions { get; private set; }
+        internal IOptionsMonitor<ClientOptions> SupportOptions { get; private set; }
 
         public ICaseResources CaseResources { get; private set; }
         public IDocumentResources DocumentResources { get; private set; }
         public IContactResources ContactResources { get; private set; }
+        public ISupportResources SupportResources { get; private set; }
 
         private Options<ClientOptions> CreateOptions(object sectionObject)
         {
@@ -227,6 +235,78 @@ namespace DfoToa.BatchRun
             }
         }
 
+        internal class SupportApiClientDirect : ISupportServiceApiClient
+        {
+            private readonly AuthKeyQuery _authKeyQuery;
+            private readonly ISupportServiceDirectApi _service;
+
+            public SupportApiClientDirect(IOptionsMonitor<ClientOptions> options)
+            {
+                _authKeyQuery = new() { AuthKey = options.CurrentValue.ApiKey };
+                HttpClient httpClient = CreateHttpClientForIntArk(options);
+                _service = RestService.For<ISupportServiceDirectApi>(httpClient);
+            }
+            public static HttpClient CreateHttpClientForIntArk(IOptionsMonitor<ClientOptions> options)
+            {
+                HttpClientHandler messageHandler = new()
+                {
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                };
+                HttpClient client = new(messageHandler)
+                {
+                    Timeout = new TimeSpan(0, 3, 0),
+                    BaseAddress = new(options.CurrentValue.BaseAddress)
+                };
+                return client;
+            }
+
+            Task<ApiResponse<string>> ISupportServiceApiClient.Ping()
+            {
+                
+                return _service.Ping(_authKeyQuery);
+            }
+
+            Task<ApiResponse<P360Client.DTO.GetCodeTableRowsResponse>> ISupportServiceApiClient.GetCodeTableRows(P360Client.DTO.GetCodeTableRowsArgs args)
+            {
+                return _service.GetCodeTableRows(_authKeyQuery, args);
+            }
+        }
+
+        internal class SupportApiClientIntArk : ISupportServiceApiClient
+        {
+            private readonly ISupportServiceIntArkApi _service;
+
+            public SupportApiClientIntArk(IOptionsMonitor<ClientOptions> options)
+            {
+                HttpClient httpClient = CreateHttpClientForIntArk(options);
+                _service = RestService.For<ISupportServiceIntArkApi>(httpClient);
+            }
+            public static HttpClient CreateHttpClientForIntArk(IOptionsMonitor<ClientOptions> options)
+            {
+                HttpClientHandler messageHandler = new()
+                {
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                };
+                HttpClient client = new(messageHandler)
+                {
+                    Timeout = new TimeSpan(0, 3, 0),
+                    BaseAddress = new(options.CurrentValue.BaseAddress)
+                };
+                client.DefaultRequestHeaders.Add("X-Gravitee-Api-Key", options.CurrentValue.ApiKey);
+                return client;
+            }
+
+            Task<ApiResponse<string>> ISupportServiceApiClient.Ping()
+            {
+                return _service.Ping();
+            }
+
+            Task<ApiResponse<P360Client.DTO.GetCodeTableRowsResponse>> ISupportServiceApiClient.GetCodeTableRows(P360Client.DTO.GetCodeTableRowsArgs args)
+            {
+                return _service.GetCodeTableRows(args);
+            }
+        }
+
 
         private class TokenResolverClass : ITokenResolver
         {
@@ -289,5 +369,22 @@ namespace DfoToa.BatchRun
                 _stateFileHandler = null;
             }
         }
+    }
+
+    internal interface ISupportServiceIntArkApi
+    {
+        [Post("/Ping")]
+        Task<ApiResponse<string>> Ping();
+
+        [Post("/GetCodeTableRows")]
+        Task<ApiResponse<P360Client.DTO.GetCodeTableRowsResponse>> GetCodeTableRows([Body] P360Client.DTO.GetCodeTableRowsArgs args);
+    }
+    internal interface ISupportServiceDirectApi
+    {
+        [Post("/Biz/v2/api/call/SI.Data.RPC/SI.Data.RPC/SupportService/Ping")]
+        Task<ApiResponse<string>> Ping([Query] AuthKeyQuery authKeyQuery);
+
+        [Post("/Biz/v2/api/call/SI.Data.RPC/SI.Data.RPC/SupportService/GetCodeTableRows")]
+        Task<ApiResponse<P360Client.DTO.GetCodeTableRowsResponse>> GetCodeTableRows([Query] AuthKeyQuery authKeyQuery, [Body] P360Client.DTO.GetCodeTableRowsArgs args);
     }
 }

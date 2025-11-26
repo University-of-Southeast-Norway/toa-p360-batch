@@ -17,6 +17,10 @@
     "contactServices": {
       "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path>/",
       "apiKey": ""
+    },
+    "supportServices": {
+      "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path>/",
+      "apiKey": ""
     }
   },
   "dfo": {

@@ -6,13 +6,15 @@ namespace DfoToa.Archive;
 
 public class ResourceClient
 {
-    public ResourceClient(ICaseResources caseResources, IDocumentResources documentResources, IContactResources contactResources)
+    public ResourceClient(ICaseResources caseResources, IDocumentResources documentResources, IContactResources contactResources, ISupportResources supportResources)
     {
         CaseResources = caseResources;
         DocumentResources = documentResources;
         ContactResources = contactResources;
+        SupportResources = supportResources;
     }
     public ICaseResources CaseResources { get; set; }
     public IDocumentResources DocumentResources { get; set; }
     public IContactResources ContactResources { get; set; }
+    public ISupportResources SupportResources { get; set; }
 }
