@@ -30,7 +30,6 @@ public static class P360BusinessLogic
         DateTimeOffset inProductionDate = DateTimeOffset.Parse(_context!.InProductionDate);
 
         IEnumerable<PrivatePerson> privatePersons = await GetPrivatePersons(personalIdNumber);
-        PrivatePerson? employee = await TryGetUniqueEmployee(privatePersons);
 
         if (!privatePersons.Any())
         {
