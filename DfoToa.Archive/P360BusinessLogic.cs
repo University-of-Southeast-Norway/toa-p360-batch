@@ -30,6 +30,7 @@ public static class P360BusinessLogic
         DateTimeOffset inProductionDate = DateTimeOffset.Parse(_context!.InProductionDate);
 
         IEnumerable<PrivatePerson> privatePersons = await GetPrivatePersons(personalIdNumber);
+        PrivatePerson? employee = await TryGetUniqueEmployee(privatePersons);
 
         if (!privatePersons.Any())
         {
@@ -177,6 +178,9 @@ public static class P360BusinessLogic
         {
             PrivatePerson? employee = privatePersons.SingleOrDefault(pp => pp.Categories.Any(ppc => codeTableRows.Any(ctr => ctr.Recno == fetchRecnoFunc(ppc) && ctr.Code == Ansatt)));
             if (employee is null) _context!.CurrentLogger.WriteToLog($"None of the persons have category '{Ansatt}'");
+            else _context!.CurrentLogger.WriteToLog($"Found unique person with category '{Ansatt}'");
+            
+            return employee;
 
             static int fetchRecnoFunc(string input)
             {
