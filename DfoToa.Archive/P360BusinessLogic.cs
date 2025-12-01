@@ -37,8 +37,8 @@ public static class P360BusinessLogic
         }
         else if (privatePersons.Count() > 1)
         {
-            await WhenMultiplePersonsFound(runResult, fileInput, inProductionDate, personalIdNumber, privatePersons, documentDate, responsiblePerson, receivers);
-            return;
+            bool continueExecute = await WhenMultiplePersonsFound(runResult, fileInput, inProductionDate, personalIdNumber, privatePersons, documentDate, responsiblePerson, receivers);
+            if (!continueExecute) return;
         }
         else
         {
@@ -144,7 +144,7 @@ public static class P360BusinessLogic
         return result;
     }
 
-    private static async Task WhenMultiplePersonsFound(RunResult runResult, NewDocumentFile fileInput, DateTimeOffset inProductionDate, string personalIdNumber, IEnumerable<PrivatePerson> privatePersons, DateTimeOffset? documentDate, PrivatePerson? responsiblePerson, IEnumerable<PrivatePerson>? receivers)
+    private static async Task<bool> WhenMultiplePersonsFound(RunResult runResult, NewDocumentFile fileInput, DateTimeOffset inProductionDate, string personalIdNumber, IEnumerable<PrivatePerson> privatePersons, DateTimeOffset? documentDate, PrivatePerson? responsiblePerson, IEnumerable<PrivatePerson>? receivers)
     {
         _context!.CurrentLogger.WriteToLog($"Found 2 or more persons with social security number {personalIdNumber} with the following recno:");
         foreach (var person in privatePersons)
@@ -155,7 +155,9 @@ public static class P360BusinessLogic
         if (employee is not null)
         {
             await WhenUniquePersonFound(runResult, fileInput, inProductionDate, employee, documentDate, responsiblePerson, receivers);
+            return true;
         }
+        return false;
     }
 
     private static async Task<PrivatePerson?> TryGetUniqueEmployee(IEnumerable<PrivatePerson> privatePersons)
