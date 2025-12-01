@@ -210,7 +210,7 @@ public static class P360BusinessLogic
     public static async Task<RunResult> Run(RunResult runResult)
     {
         CheckState();
-        await runResult.Execute(_client!);
+        await Execute(runResult);
         return runResult;
     }
 
