@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DfoClient" Version="9.2.1" />
+    <PackageReference Include="DfoClient" Version="9.2.2" />
     <PackageReference Include="InformationManager.Api.Client" Version="5.0.2" />
     <PackageReference Include="KS.Fiks.Maskinporten.Client" Version="1.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
