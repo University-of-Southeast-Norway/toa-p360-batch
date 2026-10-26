@@ -73,7 +73,8 @@ Følgende felter må settes:
 # Teknisk oppsett
 ## Systemkrav
 * Windows eller Linux
-* Fra versjon 5: [.Net 8 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+* Fra versjon 7: [.Net 10 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+* Versjon 5–6: [.Net 8 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 * Før versjon 5: [.Net 6 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 ## Forberedelser
 - Dersom du må sette opp integrason med autentisering via maskinporten må du ha fått delegert rettigheter via altinn først: https://docs.digdir.no/docs/Maskinporten/maskinporten_sjolvbetjening_web#tilgang-i-produksjonsmiljø

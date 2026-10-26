@@ -330,7 +330,7 @@ namespace DfoToa.BatchRun
                         return _maskinportenTokens[scope].Token;
                     }
 
-                    var certificate = new X509Certificate2(
+                    X509Certificate2 certificate = X509CertificateLoader.LoadPkcs12FromFile(
                         _context.MaskinportenCertificatePath,
                         _context.MaskinportenCertificatePassword
                     );
