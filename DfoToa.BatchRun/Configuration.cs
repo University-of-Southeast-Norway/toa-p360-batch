@@ -1,37 +1,22 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿namespace DfoToa.BatchRun;
+
 internal record class Configuration
 {
     public string? InProductionDate { get; set; }
 
-    public string LogFolder { get; set; }
+    public string LogFolder { get; set; } = string.Empty;
 
-    public string ReportFolder { get; set; }
+    public string ReportFolder { get; set; } = string.Empty;
 
-    public string StateFolder { get; set; }
+    public string StateFolder { get; set; } = string.Empty;
 
-    public string? P360ApiKey { get; set; }
-
-    public string? P360BaseAddress { get; set; }
-
-    public P360Intark? P360IntArk { get; set; }
-
-    public DfoConfiguration Dfo { get; set; }
+    public DfoConfiguration Dfo { get; set; } = new() { Api_Base = string.Empty };
 
     public DfoApiKeysConfiguration[]? Api_Keys { get; set; }
 
-    public record class P360Intark
-    {
-        public P360ServicesConfiguration? CaseServices { get; set; }
-        public P360ServicesConfiguration? DocumentServices { get; set; }
-        public P360ServicesConfiguration? ContactServices { get; set; }
-        public P360ServicesConfiguration? SupportServices { get; set; }
-    }
+    public MaskinportenConfiguration? Maskinporten { get; set; }
 
-    public record class P360ServicesConfiguration
-    {
-        public required string BaseAddress { get; set; }
-        public required string ApiKey { get; set; }
-    }
+    public TemplateConfiguration? Template { get; set; }
 
     public record class DfoConfiguration
     {
@@ -57,7 +42,17 @@ internal record class Configuration
     public record class CertificateConfiguration
     {
         public required string Path { get; set; }
-        public required string Password { get; set; }
+        public string? Password { get; set; }
     }
 
+    public record class TemplateConfiguration
+    {
+        public CaseManagerConfiguration? CaseManager { get; set; }
+    }
+
+    public record class CaseManagerConfiguration
+    {
+        public string? ExternalId { get; set; }
+        public string? Email { get; set; }
+    }
 }

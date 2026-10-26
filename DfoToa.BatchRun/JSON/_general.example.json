@@ -1,56 +1,59 @@
 {
-  "inProductionDate": "2023-01-01", // yyyy-MM-dd.
-  "logFolder": "c:/temp/",
-  "reportFolder": "c:/temp/",
-  "stateFolder": "state",
-  "p360ApiKey": "",
-  "p360BaseAddress": "https://<institution>.public360online.com", // TEST: https://<institution>.public360online.com
-  "p360IntArk": {
-    "caseServices": {
-      "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path til CaseService>/",
-      "apiKey": ""
+  "InProductionDate": "2023-01-01", // yyyy-MM-dd.
+  "LogFolder": "c:/temp/",
+  "ReportFolder": "c:/temp/",
+  "StateFolder": "state",
+  "P360": {
+    "AdContextUser": "swi\\360integration", // Optional, this is the default.
+    // Direct to P360 (used when 'CaseService' is not set):
+    "BaseAddress": "https://<institution>.public360online.com", // TEST: https://<institution>.public360online.com
+    "ApiKey": "",
+    // Through IntArk (used when 'CaseService' is set):
+    "CaseService": {
+      "BaseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path til CaseService>/",
+      "ApiKey": ""
     },
-    "documentServices": {
-      "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path til DocumentService>/",
-      "apiKey": ""
+    "DocumentService": {
+      "BaseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path til DocumentService>/",
+      "ApiKey": ""
     },
-    "contactServices": {
-      "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path til ContactService>/",
-      "apiKey": ""
+    "ContactService": {
+      "BaseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path til ContactService>/",
+      "ApiKey": ""
     },
-    "supportServices": {
-      "baseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path til SupportService>/",
-      "apiKey": ""
+    "SupportService": {
+      "BaseAddress": "https://gw-<institution>.intark.uh-it.no/<P360 API path til SupportService>/",
+      "ApiKey": ""
     }
   },
-  "dfo": {
-    "api_base": "https://api.dfo.no/" // TEST: https://api-test.dfo.no/
+  "Dfo": {
+    "Api_Base": "https://api.dfo.no/" // TEST: https://api-test.dfo.no/
   },
-  "maskinporten": { // This part is not required if 'api_keys' is set
-    "certificate": {
-      "path": "", // Get certificate from organization
-      "password": "" // Get password from organization
+  "Maskinporten": { // This part is not required if 'Api_Keys' is set
+    "Certificate": {
+      "Path": "", // Get certificate from organization
+      "Password": "" // Get password from organization
     },
-    "audience": "https://maskinporten.no/", // TEST: https://ver2.maskinporten.no/
-    "token_endpoint": "https://maskinporten.no/token", // TEST: https://ver2.maskinporten.no/
-    "issuer": "", // Get from samarbeidsportalen
-    "scope": "dfo:ansatte dfo:ansatte/infokontrakter dfo:infokontrakter/filer"
+    "Audience": "https://maskinporten.no/", // TEST: https://ver2.maskinporten.no/
+    "TokenEndpoint": "https://maskinporten.no/token", // TEST: https://ver2.maskinporten.no/
+    "Issuer": "", // Get from samarbeidsportalen
+    "Scope": "dfo:ansatte dfo:ansatte/infokontrakter dfo:infokontrakter/filer"
   },
-  "api_keys": [
+  "Api_Keys": [
     {
-      "scope": "dfo:ansatte",
-      "header": "X-Gravitee-Api-Key",
-      "value": ""
+      "Scope": "dfo:ansatte",
+      "Header": "X-Gravitee-Api-Key",
+      "Value": ""
     },
     {
-      "scope": "dfo:ansatte/infokontrakter",
-      "header": "X-Gravitee-Api-Key",
-      "value": ""
+      "Scope": "dfo:ansatte/infokontrakter",
+      "Header": "X-Gravitee-Api-Key",
+      "Value": ""
     },
     {
-      "scope": "dfo:infokontrakter/filer",
-      "header": "X-Gravitee-Api-Key",
-      "value": ""
+      "Scope": "dfo:infokontrakter/filer",
+      "Header": "X-Gravitee-Api-Key",
+      "Value": ""
     }
   ]
 }

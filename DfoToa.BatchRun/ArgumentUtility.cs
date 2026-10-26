@@ -17,8 +17,8 @@ namespace DfoToa.BatchRun
             Init();
         }
 
-        public string? FromDate { get; private set; }
-        public string? ToDate { get; private set; }
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
         public bool Silent { get; private set; }
         public string? SequenceNumber { get; set; }
 

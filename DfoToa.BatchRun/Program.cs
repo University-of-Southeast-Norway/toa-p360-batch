@@ -1,64 +1,43 @@
-﻿using DfoToa.Domain;
-using DfoToa.BatchRun;
-using System.Globalization;
+﻿using DfoToa.BatchRun;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using P360Client;
+using P360Client.Extensions;
 
-
-string? dateFrom = null;
-string? dateTo = null;
-
-var argumentUtility = new ArgumentUtility(Environment.GetCommandLineArgs());
-var consoleHelper = new ConsoleHelper(argumentUtility.Silent);
-
+ArgumentUtility argumentUtility = new(Environment.GetCommandLineArgs());
 if (argumentUtility.HelpNeeded()) return;
 
-bool proceed;
-if (string.IsNullOrEmpty(argumentUtility.SequenceNumber))
+IConfigurationRoot configuration = AppConfiguration.Build();
+
+IHostBuilder hostBuilder = Host.CreateDefaultBuilder();
+hostBuilder.ConfigureAppConfiguration(builder =>
 {
-    dateFrom = argumentUtility.FromDate;
-    dateTo = argumentUtility.ToDate;
-    if (dateFrom == null)
-    {
-        dateFrom = consoleHelper.GetFromDate();
-    }
-    if (dateTo == null)
-    {
-        dateTo = consoleHelper.GetToDate();
-    }
-    DefaultContext.FromDate = dateFrom;
-    DefaultContext.ToDate = dateTo;
-    proceed = consoleHelper.Proceed($"Er du sikker på at du vil arkivere avtaler fra {dateFrom} til {dateTo}? (Ja/Nei) ");
-}
-else proceed = consoleHelper.Proceed($"Er du sikker på at du vil arkivere avtale med sekvensnummer {argumentUtility.SequenceNumber}? (Ja/Nei) ");
-
-
-
-if (proceed)
+    builder.Sources.Clear();
+    builder.AddConfiguration(configuration);
+});
+hostBuilder.ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Warning));
+hostBuilder.ConfigureServices((context, services) =>
 {
+    services.Configure<ConsoleLifetimeOptions>(options => options.SuppressStatusMessages = true);
 
-    using var context = DefaultContext.Current;
-    try
-    {
-        var handler = new ArchiveHandler(context);
-        if (string.IsNullOrEmpty(argumentUtility.SequenceNumber))
-        {
-            Console.WriteLine($"Henter avtaler {dateFrom} til {dateTo}...");
-            context.CurrentLogger.WriteToLog($"Henter avtaler {dateFrom} til {dateTo}...");
-            var contracts = await handler.GetContractsFromDfo(DateTimeOffset.ParseExact(dateFrom, "yyyyMMdd", CultureInfo.InvariantCulture),
-                DateTimeOffset.ParseExact(dateTo, "yyyyMMdd", CultureInfo.InvariantCulture));
-            if (!consoleHelper.Proceed($"Fant {contracts.Count} avtaler. Ønsker du å arkivere disse? (Ja/Nei) ")) return;
-            await handler.Archive(new P360EmployeeContractHandler(context), contracts);
-        }
-        else
-        {
-            await handler.Archive(new P360EmployeeContractHandler(context), argumentUtility.SequenceNumber);
-        }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.ToString());
-        Log.LogToFile(ex.ToString());
-    }
-}
+    Configuration settings = new();
+    context.Configuration.Bind(settings);
+    services.AddSingleton(settings);
+
+    services.AddSingleton(argumentUtility);
+    services.AddSingleton(new ConsoleHelper(argumentUtility.Silent));
+    services.AddSingleton<ILog>(_ => new FileLog($"{settings.LogFolder.Trim('/').Trim('\\')}/log_{DateTimeOffset.Now:dd.MM.yyyy-HH.mm.ss}.txt"));
+    services.AddSingleton<DfoToa.Domain.IContext, DefaultContext>();
+    services.AddHostedService<ArchiveJob>();
+});
+
+IP360ClientBuilder p360ClientBuilder = hostBuilder.AddP360Client();
+if (AppConfiguration.UseIntArk(configuration)) p360ClientBuilder.UseP360ApiWithIntArk(AppConfiguration.P360Section);
+else p360ClientBuilder.UseDefaultClientResources(AppConfiguration.P360Section);
+
+await hostBuilder.Build().RunAsync();
 
 Console.WriteLine("Arkivering avsluttet");
 Console.ReadLine();

@@ -109,32 +109,35 @@ Eksempel på crontab kommando i Linux:
 ```
 
 ## Oppsett av miljøkonfigurasjon
-Konfigurasjon av miljø settes opp i filen _JSON/\_general.config_. Det medfølger en _JSON/\_general.template.config_ mal-fil som man endrer navnet på til _\_general.config_.
+Konfigurasjon av miljø settes opp i filen _JSON/\_general.json_. Det medfølger en _JSON/\_general.example.json_ mal-fil som man kopierer til _\_general.json_.
+
+Fra versjon 7 er formatet endret (se _\_general.example.json_). Filer i det gamle formatet (_p360ApiKey_, _p360BaseAddress_, _p360IntArk_ osv.) leses fortsatt, så eksisterende oppsett trenger ikke endres. Nøkler kan også overstyres med miljøvariabler, med `__` som skilletegn, f.eks. `P360__ApiKey`.
 
 ### Parametere:
-_inProductionDate_ - Dette feltet brukes til å hindre at man gjenbruker gamle saker som matcher på feltene som er satt opp i _get_cases.json_. Dette kan være saker som er lagt inn manuelt på en person i P360 og som det tilfeldigvis oppstår en match på. For å unngå at en gammel sak gjenbrukes kan man sette dette feltet til datoen for første kjøring av denne løsningen, slik at man ved fremtidige første og fremtidige kjøringer kun bruker saken som er opprettet av denne løsningen. Man kan også bruke dette feltet dersom man ønsker å tvinge opprettelse av en ny sak på person ved overføring av nye avtaler ved en senere anledning.
+_InProductionDate_ - Dette feltet brukes til å hindre at man gjenbruker gamle saker som matcher på feltene som er satt opp i _get_cases.json_. Dette kan være saker som er lagt inn manuelt på en person i P360 og som det tilfeldigvis oppstår en match på. For å unngå at en gammel sak gjenbrukes kan man sette dette feltet til datoen for første kjøring av denne løsningen, slik at man ved fremtidige første og fremtidige kjøringer kun bruker saken som er opprettet av denne løsningen. Man kan også bruke dette feltet dersom man ønsker å tvinge opprettelse av en ny sak på person ved overføring av nye avtaler ved en senere anledning.
 
-_p360ApiKey_ – institusjonens unike API-nøkkel, brukes for kobling direkte mot P360 API
+_P360_ – oppsett av kobling mot P360 API:
+- _BaseAddress_ – base-adressen til P360 API, brukes for kobling direkte mot P360 API
+- _ApiKey_ – institusjonens unike API-nøkkel, brukes for kobling direkte mot P360 API
+- _CaseService_, _DocumentService_, _ContactService_, _SupportService_ – settes opp (med _BaseAddress_ og _ApiKey_) dersom kall mot P360 API skal gå via IntArk. Er _CaseService_ satt, går alle kall via IntArk, ellers går de direkte mot P360 API.
+- _AdContextUser_ – valgfri, standard er `swi\360integration`
 
-_p360BaseAddress_ – base-adressen til P360 API, brukes for kobling direkte mot P360 API
+_Dfo_ –
+- _Api_Base_: base-adressen til DFØ API
 
-_p360IntArk_ - settes opp dersom kall mot P360 API skal gå via IntArk
+_Maskinporten_ –
+- _Certificate_: _Path_ angir katalog-sti til plassering av institusjonens sertifikat (p12 fil), _Password_ er passord til sertifikatet
+- _Issuer_: unik identifikator hentet fra samarbeidsportalen
 
-_maskinporten_ –
-- path: angi katalog-sti til plassering av institusjonens sertifikat (p12 fil)
-- password: passord til sertifikatet
+_LogFolder_ – mappe der logger lagres
 
-_issuer_ – unik identifikator hentet fra samarbeidsportalen
+_ReportFolder_ – mappe der rapport på overførte avtaler lagres
 
-_logFolder_ – mappe der logger lagres
+_StateFolder_ – mappe som brukes til å holde state på overføring av avtaler. Innhold i denne mappen **bør slettes** etter en tid i etterkant av en overføring. Dersom man ser behov for å kjøre en periode på nytt bør man avvente med å slette innhold i denne mappen til dette er utført.
 
-_reportFolder_ – mappe der rapport på overførte avtaler lagres
+_Api_Keys_ - som et alternativ til Maskinporten kan man sette opp autentisering med API-nøkler, for eksempel om man har satt opp en gateway mot DFØ-API i IntArk
 
-_stateFolder_ – mappe som brukes til å holde state på overføring av avtaler. Innhold i denne mappen **bør slettes** etter en tid i etterkant av en overføring. Dersom man ser behov for å kjøre en periode på nytt bør man avvente med å slette innhold i denne mappen til dette er utført.
-
-_api_keys_ - som et alternativ til Maskinporten kan man sette opp autentisering med API-nøkler, for eksempel om man har satt opp en gateway mot DFØ-API i IntArk
-
-_scope_ - det må oppgis header og API-nøkkel for dfo:ansatte dfo:ansatte/infokontrakter dfo:infokontrakter/filer
+_Scope_ - det må oppgis header og API-nøkkel for dfo:ansatte dfo:ansatte/infokontrakter dfo:infokontrakter/filer
   - Som angitt i _general.example.json setter man opp en nøkkel for hvert scope, men det er mulig å gjenbruke samme nøkkel dersom man har valgt å pakke scope sammen i gateway (IntArk)
 
 ## Oppsett av maler
