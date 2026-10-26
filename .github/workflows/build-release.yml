@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '8.0.x' ]
+        dotnet-version: [ '10.0.x' ]
 
     steps:
       - uses: actions/checkout@v3
@@ -39,9 +39,9 @@ jobs:
       - name: Restore NuGet Packages
         run: dotnet restore
       - name: Build for linux
-        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net8.0 --runtime linux-x64 -p:PublishProfile=linux
+        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net10.0 --runtime linux-x64 -p:PublishProfile=linux
       - name: Build for windows
-        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net8.0 --runtime win-x64 -p:PublishProfile=windows
+        run: dotnet publish DfoToa.BatchRun/DfoToa.BatchRun.csproj --configuration Release --no-restore --framework net10.0 --runtime win-x64 -p:PublishProfile=windows
       - name: Test
         run: dotnet test ${{ env.test_project }} --no-restore --verbosity normal
 

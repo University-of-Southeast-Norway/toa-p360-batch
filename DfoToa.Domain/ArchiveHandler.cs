@@ -87,7 +87,7 @@ public class ArchiveHandler
         }
         else
         {
-            var certificate = new X509Certificate2(
+            X509Certificate2 certificate = X509CertificateLoader.LoadPkcs12FromFile(
                 Context.MaskinportenCertificatePath,
                 Context.MaskinportenCertificatePassword
             );
